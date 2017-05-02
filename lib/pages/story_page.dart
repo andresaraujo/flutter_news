@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_news/item_model.dart';
-import 'package:flutter_news/pages/hn_api.dart';
+import 'package:flutter_news/hn_api.dart';
 
 bool notNull(Object o) => o != null;
 
