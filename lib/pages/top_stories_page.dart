@@ -8,10 +8,10 @@ import 'package:flutter_news/pages/story_page.dart';
 
 class TopStoriesPage extends StatefulWidget {
   @override
-  _NewsPageState createState() => new _NewsPageState();
+  _TopStoriesPageState createState() => new _TopStoriesPageState();
 }
 
-class _NewsPageState extends State<TopStoriesPage> {
+class _TopStoriesPageState extends State<TopStoriesPage> {
   List<Item> _stories = [];
 
   initState() {
