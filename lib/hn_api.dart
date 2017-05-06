@@ -3,16 +3,17 @@ import 'dart:convert';
 import 'package:flutter/services.dart';
 import 'package:flutter_news/item_model.dart';
 
+const debugMode = false;
 
-
-const hnUrl = 'https://hacker-news.firebaseio.com/v0';
+const hnUrl = debugMode ? 'http://localhost:3000' : 'https://hacker-news.firebaseio.com/v0';
+const hnTopStoriesUrl = '$hnUrl/topstories.json';
+const hnItemUrl = '$hnUrl/item';
 
 const jsonCodec = const JsonCodec();
 
-
 Future<List<Item>> getTopStories() async {
   final httpClient = createHttpClient();
-  final response = await httpClient.get('$hnUrl/topstories.json');
+  final response = await httpClient.get(hnTopStoriesUrl);
 
   List<int> topStories = jsonCodec.decode(response.body);
 
@@ -30,7 +31,9 @@ Future<List<Item>> getComments(List<int> ids) async {
 
 Future<Item> getStory(int id) async {
   final httpClient = createHttpClient();
-  final response = await httpClient.get('$hnUrl/item/$id.json');
+
+  var url = debugMode ? '$hnItemUrl/$id' : '$hnItemUrl/$id.json';
+  final response = await httpClient.get(url);
 
   Map<String, dynamic> story = jsonCodec.decode(response.body);
 

@@ -24,16 +24,34 @@ class _TopStoriesPageState extends State<TopStoriesPage> {
     });
   }
 
+  buildNavItem(IconData icon, String title) {
+    return new BottomNavigationBarItem(
+        icon: new Icon(icon),
+        title: new Text(title)
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-
     final storyListTiles = _stories.map((s) {
       return new StoryListTile(s, onTap: () => _onTapStory(s));
     }).toList();
 
     return new Scaffold(
         appBar: new AppBar(
-            title: new Text('Flutter News')
+          title: new Text('Flutter News'),
+          elevation: Theme
+              .of(context)
+              .platform == TargetPlatform.iOS ? 0.0 : 4.0,
+        ),
+        bottomNavigationBar: new BottomNavigationBar(
+            items: [
+              buildNavItem(Icons.whatshot, 'Top'),
+              buildNavItem(Icons.new_releases, 'New'),
+              buildNavItem(Icons.view_compact, 'Show'),
+              buildNavItem(Icons.question_answer, 'Ask'),
+              buildNavItem(Icons.work, 'Jobs'),
+            ]
         ),
         body: new RefreshIndicator(
             child: new ListView(
