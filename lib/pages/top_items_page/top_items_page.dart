@@ -101,7 +101,7 @@ class _TopItemsPageState extends State<TopItemsPage> {
   void _onTapItem(HnItem story) {
     final page = new MaterialPageRoute(
         settings: new RouteSettings(name: '${story.title}'),
-        builder: (_) => new ItemPage(story, index: _items.indexOf(story))
+        builder: (_) => new ItemPage(story)
     );
     Navigator.of(context).push(page);
   }

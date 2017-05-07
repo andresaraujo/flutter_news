@@ -6,10 +6,9 @@ import 'package:flutter_news/hn_api.dart';
 import 'package:flutter_news/utils.dart';
 
 class ItemPage extends StatefulWidget {
-  final int index;
   final HnItem item;
 
-  ItemPage(this.item, {this.index});
+  ItemPage(this.item);
 
   @override
   _StoryPageState createState() => new _StoryPageState();
