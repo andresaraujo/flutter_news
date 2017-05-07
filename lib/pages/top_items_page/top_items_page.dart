@@ -33,7 +33,7 @@ class _TopItemsPageState extends State<TopItemsPage> {
     });
   }
 
-  buildNavItem(IconData icon, String title) {
+  _buildNavItem(IconData icon, String title) {
     return new BottomNavigationBarItem(
       icon: new Icon(icon),
       title: new Text(title),
@@ -75,11 +75,11 @@ class _TopItemsPageState extends State<TopItemsPage> {
         ),
         bottomNavigationBar: new BottomNavigationBar(
           items: [
-            buildNavItem(Icons.whatshot, 'Top'),
-            buildNavItem(Icons.new_releases, 'New'),
-            buildNavItem(Icons.view_compact, 'Show'),
-            buildNavItem(Icons.question_answer, 'Ask'),
-            buildNavItem(Icons.work, 'Jobs'),
+            _buildNavItem(Icons.whatshot, 'Top'),
+            _buildNavItem(Icons.new_releases, 'New'),
+            _buildNavItem(Icons.view_compact, 'Show'),
+            _buildNavItem(Icons.question_answer, 'Ask'),
+            _buildNavItem(Icons.work, 'Jobs'),
           ],
           currentIndex: _selectedNavIndex,
           onTap: _handleNavChange,

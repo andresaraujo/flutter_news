@@ -28,7 +28,7 @@ class _StoryPageState extends State<ItemPage> {
     });
   }
 
-  buildReplyButton(HnItem item) {
+  _buildReplyButton(HnItem item) {
     if (item.kids.length == 0) return null;
 
     return new ButtonTheme.bar(child: new ButtonBar(
@@ -65,7 +65,7 @@ class _StoryPageState extends State<ItemPage> {
                         overflow: TextOverflow.ellipsis,
                         style: textTheme.body1,
                       ),
-                      buildReplyButton(item),
+                      _buildReplyButton(item),
                     ].where(notNull).toList(),
                   )
               )
