@@ -7,9 +7,9 @@ bool notNull(Object o) => o != null;
 
 class ItemPage extends StatefulWidget {
   final int index;
-  final HnItem story;
+  final HnItem item;
 
-  ItemPage(this.index, this.story);
+  ItemPage(this.item, {this.index});
 
   @override
   _StoryPageState createState() => new _StoryPageState();
@@ -22,7 +22,7 @@ class _StoryPageState extends State<ItemPage> {
 
   initState() {
     super.initState();
-    getComments(widget.story.kids).then((items) {
+    getComments(widget.item.kids).then((items) {
       setState(() {
         _comments = items;
       });
@@ -37,7 +37,9 @@ class _StoryPageState extends State<ItemPage> {
         children: <Widget>[
           new FlatButton(
             child: new Text('Show Replies (${item.kids.length})'),
-            onPressed: () { _onShowRepliesPressed(item); },
+            onPressed: () {
+              _onShowRepliesPressed(item);
+            },
           ),
         ]));
   }
@@ -48,7 +50,7 @@ class _StoryPageState extends State<ItemPage> {
         .of(context)
         .textTheme;
 
-    final commentCards = _comments.map((HnItem item) {
+    final commentCards = _comments.where((i) => !i.deleted).map((HnItem item) {
       return new Container(
           padding: new EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 0.0),
           child: new Card(
@@ -73,15 +75,26 @@ class _StoryPageState extends State<ItemPage> {
     });
 
     final listItems = <Widget>[
-      new TitleSectionTile(widget.story),
+      new TitleSectionTile(widget.item),
       new Divider()
     ];
 
     listItems.addAll(commentCards);
 
+    String title = '';
+
+    switch (widget.item.type) {
+      case 'story':
+        title = 'Top story #${widget.index + 1}';
+        break;
+      case 'comment':
+        title = 'Comment by ${widget.item.user}';
+        break;
+    }
+
     return new Scaffold(
-        //key: _scaffoldKey,
-        appBar: new AppBar(title: new Text('Top story #${widget.index + 1}')),
+      //key: _scaffoldKey,
+        appBar: new AppBar(title: new Text(title)),
         body: new ListView(
           children: listItems,
         )
@@ -93,7 +106,7 @@ class _StoryPageState extends State<ItemPage> {
         new SnackBar(content: new Text('Not implemented yet!')));*/
     final page = new MaterialPageRoute(
         settings: new RouteSettings(name: '${item.title}'),
-        builder: (_) => new ItemPage(1, item)
+        builder: (_) => new ItemPage(item)
     );
     Navigator.of(context).push(page);
   }

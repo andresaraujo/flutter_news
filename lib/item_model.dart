@@ -5,6 +5,7 @@ class HnItem {
   String title;
   String text;
   String type;
+  bool deleted;
   int time;
   String url;
   String user;
@@ -24,6 +25,7 @@ class HnItem {
     text = formatText(story['text'] ?? '');
     commentsCount = story['descendants'] ?? 0;
     type = story['type'] ?? 'story';
+    deleted = story['deleted'] ?? false;
   }
 
   toString() => '''

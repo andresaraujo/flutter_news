@@ -20,14 +20,13 @@ class TitleSectionTile extends StatelessWidget {
     final captionStyle = textTheme.caption;
 
     Widget top = _buildText('${item.title}', textTheme.title);
-    Widget middle = new Container();
+    Widget middle = _buildText('${item.score} Points | ${item.commentsCount} Comments ',
+        captionStyle);
     Widget bottom = _buildText('Posted by ${item.user}', captionStyle);
 
     if (item.type == 'comment') {
       top = new Text('${item.text}', style: textTheme.body2);
-      middle =
-          _buildText('${item.score} Points | ${item.commentsCount} Comments ',
-              captionStyle);
+      middle = new Container();
     }
 
     final children = [
