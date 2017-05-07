@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_news/components/story_list_tile.dart';
 import 'package:flutter_news/hn_api.dart';
 import 'package:flutter_news/item_model.dart';
-import 'package:flutter_news/pages/story_page.dart';
+import 'package:flutter_news/pages/item_page.dart';
 
 
 class TopStoriesPage extends StatefulWidget {
@@ -73,7 +73,7 @@ class _TopStoriesPageState extends State<TopStoriesPage> {
   void _onTapStory(HnItem story) {
     final page = new MaterialPageRoute(
         settings: new RouteSettings(name: '${story.title}'),
-        builder: (_) => new StoryPage(_stories.indexOf(story), story)
+        builder: (_) => new ItemPage(_stories.indexOf(story), story)
     );
     Navigator.of(context).push(page);
   }

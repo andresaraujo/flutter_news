@@ -5,17 +5,17 @@ import 'package:flutter_news/hn_api.dart';
 
 bool notNull(Object o) => o != null;
 
-class StoryPage extends StatefulWidget {
+class ItemPage extends StatefulWidget {
   final int index;
   final HnItem story;
 
-  StoryPage(this.index, this.story);
+  ItemPage(this.index, this.story);
 
   @override
   _StoryPageState createState() => new _StoryPageState();
 }
 
-class _StoryPageState extends State<StoryPage> {
+class _StoryPageState extends State<ItemPage> {
   static final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<
       ScaffoldState>();
   List<HnItem> _comments = [];
@@ -29,15 +29,15 @@ class _StoryPageState extends State<StoryPage> {
     });
   }
 
-  buildReplyButton(int commentCount) {
-    if (commentCount == 0) return null;
+  buildReplyButton(HnItem item) {
+    if (item.kids.length == 0) return null;
 
     return new ButtonTheme.bar(child: new ButtonBar(
         alignment: MainAxisAlignment.end,
         children: <Widget>[
           new FlatButton(
-            child: new Text('Show Replies ($commentCount)'),
-            onPressed: _onShowRepliesPressed,
+            child: new Text('Show Replies (${item.kids.length})'),
+            onPressed: () { _onShowRepliesPressed(item); },
           ),
         ]));
   }
@@ -64,7 +64,7 @@ class _StoryPageState extends State<StoryPage> {
                         overflow: TextOverflow.ellipsis,
                         style: textTheme.body1,
                       ),
-                      buildReplyButton(item.kids.length),
+                      buildReplyButton(item),
                     ].where(notNull).toList(),
                   )
               )
@@ -80,7 +80,7 @@ class _StoryPageState extends State<StoryPage> {
     listItems.addAll(commentCards);
 
     return new Scaffold(
-        key: _scaffoldKey,
+        //key: _scaffoldKey,
         appBar: new AppBar(title: new Text('Top story #${widget.index + 1}')),
         body: new ListView(
           children: listItems,
@@ -88,9 +88,14 @@ class _StoryPageState extends State<StoryPage> {
     );
   }
 
-  void _onShowRepliesPressed() {
-    _scaffoldKey.currentState.showSnackBar(
-        new SnackBar(content: new Text('Not implemented yet!')));
+  void _onShowRepliesPressed(HnItem item) {
+    /*_scaffoldKey.currentState.showSnackBar(
+        new SnackBar(content: new Text('Not implemented yet!')));*/
+    final page = new MaterialPageRoute(
+        settings: new RouteSettings(name: '${item.title}'),
+        builder: (_) => new ItemPage(1, item)
+    );
+    Navigator.of(context).push(page);
   }
 }
 
