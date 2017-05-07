@@ -6,7 +6,11 @@ import 'package:flutter_news/item_model.dart';
 import 'package:flutter_news/pages/item_page/item_page.dart';
 
 enum NavTypes {
-  topStories, newStories, showStories, askStories, jobStories
+  topStories,
+  newStories,
+  showStories,
+  askStories,
+  jobStories
 }
 
 
@@ -38,7 +42,6 @@ class _TopItemsPageState extends State<TopItemsPage> {
 
   @override
   Widget build(BuildContext context) {
-
     final appTitle = new Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -90,11 +93,36 @@ class _TopItemsPageState extends State<TopItemsPage> {
     );
   }
 
-  Future<Null> _onRefresh() {
-    return getTopStories().then((stories) {
-      setState(() {
-        _items = stories;
-      });
+  Future<Null> _onRefresh({int navIndex}) async {
+    navIndex ??= _selectedNavIndex;
+    final navType = NavTypes.values[navIndex];
+    var items = <HnItem>[];
+
+    setState(() {
+      _items = items;
+      _selectedNavIndex = navIndex;
+    });
+
+    switch (navType) {
+      case NavTypes.topStories:
+        items = await getTopStories();
+        break;
+      case NavTypes.newStories:
+        items = await getNewStories();
+        break;
+      case NavTypes.showStories:
+        items = await getShowStories();
+        break;
+      case NavTypes.askStories:
+        items = await getAskStories();
+        break;
+      case NavTypes.jobStories:
+        items = await getJobStories();
+        break;
+    }
+
+    setState(() {
+      _items = items;
     });
   }
 
@@ -107,37 +135,9 @@ class _TopItemsPageState extends State<TopItemsPage> {
   }
 
   _handleNavChange(int value) async {
-    if(value == _selectedNavIndex) return;
+    if (value == _selectedNavIndex) return;
 
-    final navType = NavTypes.values[value];
-    var items = <HnItem>[];
-
-    setState(() {
-      _items = items;
-      _selectedNavIndex = value;
-    });
-
-    switch(navType) {
-      case NavTypes.topStories:
-        items = await getTopStories();
-      break;
-      case NavTypes.newStories:
-        items = await getNewStories();
-      break;
-      case NavTypes.showStories:
-        items = await getShowStories();
-      break;
-      case NavTypes.askStories:
-        items = await getAskStories();
-      break;
-      case NavTypes.jobStories:
-        items = await getJobStories();
-      break;
-    }
-
-    setState(() {
-      _items = items;
-    });
+    _onRefresh(navIndex: value);
   }
 }
 
