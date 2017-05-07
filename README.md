@@ -2,7 +2,9 @@
 
 A Hacker News made with [Flutter](http://flutter.io/).
 
-<img alt="iOS screenshot" src="screenshot_ios.png" height="640">
+| iOS | Android |
+| --- | ------- |
+| <img alt="iOS screenshot" src="screenshot_ios.png" height="640"> | <img alt="Android screenshot" src="screenshot_android.png" height="640"> |
 
 
 ## TODO
