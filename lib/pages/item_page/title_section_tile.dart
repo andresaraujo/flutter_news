@@ -13,15 +13,19 @@ class TitleSectionTile extends StatelessWidget {
   }
 
   _buildTop(String title, String url, TextTheme textTheme) {
+    final children = [];
+
+    if(url.isNotEmpty) {
+      children.add(
+        new TextSpan(text: '(${parseDomain(url)})', style: textTheme.caption)
+      );
+    }
     return new Padding(
         padding: const EdgeInsets.only(bottom: 5.0),
         child: new RichText(text: new TextSpan(
           text: '$title ',
           style: textTheme.title,
-          children: [
-            new TextSpan(
-                text: '(${parseDomain(url)})', style: textTheme.caption)
-          ],
+          children: children,
         ))
     );
   }

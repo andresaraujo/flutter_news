@@ -3,8 +3,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_news/pages/item_page/title_section_tile.dart';
 import 'package:flutter_news/item_model.dart';
 import 'package:flutter_news/hn_api.dart';
-
-bool notNull(Object o) => o != null;
+import 'package:flutter_news/utils.dart';
 
 class ItemPage extends StatefulWidget {
   final int index;
@@ -17,7 +16,7 @@ class ItemPage extends StatefulWidget {
 }
 
 class _StoryPageState extends State<ItemPage> {
-  static final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<
       ScaffoldState>();
   List<HnItem> _comments = [];
 
@@ -83,23 +82,28 @@ class _StoryPageState extends State<ItemPage> {
     listItems.addAll(commentCards);
 
     String title = '';
-    List<IconButton> actions;
+    List<IconButton> actions = [];
 
     switch (widget.item.type) {
       case 'story':
-        title = 'Top story #${widget.index + 1}';
-        actions = [
-          new IconButton(
-              icon: const Icon(Icons.open_in_browser), onPressed: _launchURL),
-        ];
+        title = '';
+        if(widget.item.url.isNotEmpty) {
+          actions.add(
+            new IconButton(
+                icon: const Icon(Icons.open_in_browser), onPressed: _launchURL),
+          );
+        }
         break;
       case 'comment':
         title = 'Comment by ${widget.item.user}';
         break;
     }
 
+    actions.add(new IconButton(
+        icon: const Icon(Icons.share), onPressed: _share));
+
     return new Scaffold(
-      //key: _scaffoldKey,
+        key: _scaffoldKey,
         appBar: new AppBar(
             title: new Text(title),
             actions: actions,
@@ -112,8 +116,6 @@ class _StoryPageState extends State<ItemPage> {
   }
 
   void _onShowRepliesPressed(HnItem item) {
-    /*_scaffoldKey.currentState.showSnackBar(
-        new SnackBar(content: new Text('Not implemented yet!')));*/
     final page = new MaterialPageRoute(
         settings: new RouteSettings(name: '${item.title}'),
         builder: (_) => new ItemPage(item)
@@ -123,5 +125,10 @@ class _StoryPageState extends State<ItemPage> {
 
   _launchURL() {
     launch(widget.item.url);
+  }
+
+  void _share() {
+    _scaffoldKey.currentState.showSnackBar(
+        new SnackBar(content: new Text('Not implemented yet!')));
   }
 }

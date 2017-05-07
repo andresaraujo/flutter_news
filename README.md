@@ -8,7 +8,7 @@ A Hacker News made with [Flutter](http://flutter.io/).
 ## TODO
 
 - [ ] "Load more" when user reaches bottom of the list
-- [ ] Fetch news, show, ask, etc
+- [x] Fetch news, show, ask, etc
 - [ ] Dark theme (add side bar menu)
 - [ ] Add fuzzy time ("timeago")
 - [ ] Better layout for comments

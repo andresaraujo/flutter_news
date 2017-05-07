@@ -53,9 +53,10 @@ class TopItemTile extends StatelessWidget {
   }
 
   Widget buildBadge(int count, Color backgroundColor, TextTheme textTheme) {
-    TextStyle textStyle = textTheme.caption.copyWith(color: Colors.white, fontSize: 10.0);
+    TextStyle textStyle = textTheme.caption.copyWith(
+        color: Colors.white, fontSize: 10.0);
     return new Container(
-      margin: const EdgeInsets.only(bottom: 2.0),
+        margin: const EdgeInsets.only(bottom: 2.0),
         width: 25.0,
         height: 25.0,
         decoration: new BoxDecoration(
@@ -64,7 +65,7 @@ class TopItemTile extends StatelessWidget {
         ),
         child: new Container(
             padding: new EdgeInsets.all(2.0),
-            child: new Center(child: new Text('$count', style: textStyle) )
+            child: new Center(child: new Text('$count', style: textStyle))
         )
     );
   }
@@ -79,16 +80,20 @@ class TopItemTile extends StatelessWidget {
   }
 
   _buildTop(TextTheme textTheme) {
+    final children = [];
+
+    if (story.url.isNotEmpty) {
+      children.add(new TextSpan(
+        text: '(${parseDomain(story.url)})',
+        style: textTheme.caption,
+      ));
+    }
+
     return new RichText(
       text: new TextSpan(
         text: '${story.title} ',
         style: textTheme.body2,
-        children: [
-          new TextSpan(
-            text: '(${parseDomain(story.url)})',
-            style: textTheme.caption,
-          )
-        ],
+        children: children,
       ),
     );
   }

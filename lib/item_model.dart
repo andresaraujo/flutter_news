@@ -28,7 +28,5 @@ class HnItem {
     deleted = story['deleted'] ?? false;
   }
 
-  toString() => '''
-  {id: $id, title: $title}
-  ''';
+  toString() => '{id: $id, title: $title}';
 }

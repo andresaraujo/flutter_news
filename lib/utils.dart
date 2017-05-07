@@ -21,3 +21,5 @@ String formatText(String str){
     .replaceAll(new RegExp('</a>'), '')
   ;
 }
+
+bool notNull(Object o) => o != null;
