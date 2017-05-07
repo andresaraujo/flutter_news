@@ -21,7 +21,7 @@ class HnItem {
     user = story['by'] ?? '';
     kids = story['kids'] ?? [];
     score = story['score'] ?? 0;
-    url = parseDomain(story['url'] ?? '');
+    url = story['url'] ?? '';
     text = formatText(story['text'] ?? '');
     commentsCount = story['descendants'] ?? 0;
     type = story['type'] ?? 'story';

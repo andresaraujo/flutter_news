@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_news/item_model.dart';
+import 'package:flutter_news/utils.dart';
 
 class TopItemTile extends StatelessWidget {
   final HnItem story;
@@ -66,7 +67,7 @@ class TopItemTile extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _buildText(story.title, bold: true),
-          _buildText(story.url),
+          _buildText(parseDomain(story.url)),
           _buildText('by ${story.user} 5 hours ago'),
         ]
     );

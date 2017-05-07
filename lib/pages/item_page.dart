@@ -122,6 +122,6 @@ class _StoryPageState extends State<ItemPage> {
   }
 
   _launchURL() {
-    launch('https://flutter.io');
+    launch(widget.item.url);
   }
 }
