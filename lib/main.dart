@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_news/pages/top_items_page.dart';
+import 'package:flutter_news/pages/top_items_page/top_items_page.dart';
 
 void main() {
   runApp(new FlutterNewsApp());

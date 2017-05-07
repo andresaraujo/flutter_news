@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:flutter_news/components/title_section_tile.dart';
+import 'package:flutter_news/pages/item_page/title_section_tile.dart';
 import 'package:flutter_news/item_model.dart';
 import 'package:flutter_news/hn_api.dart';
 

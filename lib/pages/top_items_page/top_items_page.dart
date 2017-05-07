@@ -1,9 +1,9 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:flutter_news/components/top_item_tile.dart';
+import 'package:flutter_news/pages/top_items_page/top_item_tile.dart';
 import 'package:flutter_news/hn_api.dart';
 import 'package:flutter_news/item_model.dart';
-import 'package:flutter_news/pages/item_page.dart';
+import 'package:flutter_news/pages/item_page/item_page.dart';
 
 
 class TopItemsPage extends StatefulWidget {
