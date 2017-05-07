@@ -1,8 +1,16 @@
 # flutter_news
 
-A new flutter project.
+A Hacker News made with [Flutter](http://flutter.io/).
 
-## Getting Started
+<img alt="iOS screenshot" src="screenshot_ios.png" height="640">
 
-For help getting started with Flutter, view our online
-[documentation](http://flutter.io/).
+
+## TODO
+
+- [ ] "Load more" when user reaches bottom of the list
+- [ ] Fetch news, show, ask, etc
+- [ ] Dark theme (add side bar menu)
+- [ ] Add fuzzy time ("timeago")
+- [ ] Better layout for comments
+- [ ] Share item
+ 
