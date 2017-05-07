@@ -5,6 +5,7 @@ dependencies:
   flutter:
     sdk: flutter
   url_launcher: "^0.3.3"
+  timeago: any
 
 # For information on the generic Dart part of this file, see the
 # following page: https://www.dartlang.org/tools/pub/pubspec

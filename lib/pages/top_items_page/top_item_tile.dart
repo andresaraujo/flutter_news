@@ -24,7 +24,7 @@ class TopItemTile extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _buildTop(textTheme),
-          _buildText('by ${story.user} 5 hours ago', textTheme),
+          _buildText('by ${story.user} | ${story.timeAgo}', textTheme),
         ]
     );
 

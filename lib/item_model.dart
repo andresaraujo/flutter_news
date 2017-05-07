@@ -1,4 +1,7 @@
 import 'package:flutter_news/utils.dart';
+import 'package:timeago/timeago.dart';
+
+final fuzzy = new TimeAgo();
 
 class HnItem {
   int id;
@@ -13,6 +16,8 @@ class HnItem {
   int commentsCount = 0;
   List<int> kids;
 
+  String timeAgo;
+
   HnItem();
 
   HnItem.fromJson(Map<String, dynamic> story) {
@@ -26,6 +31,9 @@ class HnItem {
     commentsCount = story['descendants'] ?? 0;
     type = story['type'] ?? 'story';
     deleted = story['deleted'] ?? false;
+    time = story['time'] ?? new DateTime.now().millisecondsSinceEpoch;
+
+    timeAgo = fuzzy.timeAgo(time * 1000);
   }
 
   toString() => '{id: $id, title: $title}';
