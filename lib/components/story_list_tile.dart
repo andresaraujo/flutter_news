@@ -39,6 +39,7 @@ class StoryListTile extends StatelessWidget {
   CircleAvatar buildBadge(int count, {bool greyed: false}) {
     final bgColor = greyed ? Colors.grey : Colors.orange;
     return new CircleAvatar(
+
         backgroundColor: bgColor,
         child: new Text('$count',
           textAlign: TextAlign.center,

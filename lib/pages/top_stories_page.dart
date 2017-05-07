@@ -39,7 +39,25 @@ class _TopStoriesPageState extends State<TopStoriesPage> {
 
     return new Scaffold(
         appBar: new AppBar(
-          title: new Text('Flutter News'),
+          title: new Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                new Container(
+                  margin: const EdgeInsets.only(right: 8.0),
+                  padding: const EdgeInsets.symmetric(
+                      vertical: 2.0, horizontal: 8.0),
+                  decoration: new BoxDecoration(
+                    borderRadius: new BorderRadius.circular(2.0),
+                      border: new Border.all(
+                        width: 2.0,
+                        color: Colors.white,
+                      )
+                  ),
+                  child: new Text('F'),
+                ),
+                new Text('Flutter News')
+              ]
+          ),
           elevation: Theme
               .of(context)
               .platform == TargetPlatform.iOS ? 0.0 : 4.0,

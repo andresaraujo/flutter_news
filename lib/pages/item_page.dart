@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_news/components/title_section_tile.dart';
 import 'package:flutter_news/item_model.dart';
 import 'package:flutter_news/hn_api.dart';
@@ -82,10 +83,15 @@ class _StoryPageState extends State<ItemPage> {
     listItems.addAll(commentCards);
 
     String title = '';
+    List<IconButton> actions;
 
     switch (widget.item.type) {
       case 'story':
         title = 'Top story #${widget.index + 1}';
+        actions = [
+          new IconButton(
+              icon: const Icon(Icons.open_in_browser), onPressed: _launchURL),
+        ];
         break;
       case 'comment':
         title = 'Comment by ${widget.item.user}';
@@ -94,7 +100,11 @@ class _StoryPageState extends State<ItemPage> {
 
     return new Scaffold(
       //key: _scaffoldKey,
-        appBar: new AppBar(title: new Text(title)),
+        appBar: new AppBar(
+            title: new Text(title),
+            actions: actions,
+        ),
+
         body: new ListView(
           children: listItems,
         )
@@ -110,5 +120,8 @@ class _StoryPageState extends State<ItemPage> {
     );
     Navigator.of(context).push(page);
   }
-}
 
+  _launchURL() {
+    launch('https://flutter.io');
+  }
+}
