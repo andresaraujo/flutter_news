@@ -1,9 +1,10 @@
 import 'package:flutter_news/utils.dart';
 
-class Item {
+class HnItem {
   int id;
   String title;
   String text;
+  String type;
   int time;
   String url;
   String user;
@@ -11,9 +12,9 @@ class Item {
   int commentsCount = 0;
   List<int> kids;
 
-  Item();
+  HnItem();
 
-  Item.fromJson(Map<String, dynamic> story) {
+  HnItem.fromJson(Map<String, dynamic> story) {
     id = story['id'] ?? 0;
     title = story['title'] ?? '';
     user = story['by'] ?? '';
@@ -22,6 +23,7 @@ class Item {
     url = parseDomain(story['url'] ?? '');
     text = formatText(story['text'] ?? '');
     commentsCount = story['descendants'] ?? 0;
+    type = story['type'] ?? 'story';
   }
 
   toString() => '''

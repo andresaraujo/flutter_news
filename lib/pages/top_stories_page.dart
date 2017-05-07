@@ -12,7 +12,7 @@ class TopStoriesPage extends StatefulWidget {
 }
 
 class _TopStoriesPageState extends State<TopStoriesPage> {
-  List<Item> _stories = [];
+  List<HnItem> _stories = [];
 
   initState() {
     super.initState();
@@ -70,7 +70,7 @@ class _TopStoriesPageState extends State<TopStoriesPage> {
     });
   }
 
-  void _onTapStory(Item story) {
+  void _onTapStory(HnItem story) {
     final page = new MaterialPageRoute(
         settings: new RouteSettings(name: '${story.title}'),
         builder: (_) => new StoryPage(_stories.indexOf(story), story)

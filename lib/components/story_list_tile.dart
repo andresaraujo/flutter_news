@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_news/item_model.dart';
 
 class StoryListTile extends StatelessWidget {
-  final Item story;
+  final HnItem story;
   final GestureTapCallback onTap;
 
   StoryListTile(this.story, {this.onTap});

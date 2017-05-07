@@ -11,7 +11,7 @@ const hnItemUrl = '$hnUrl/item';
 
 const jsonCodec = const JsonCodec();
 
-Future<List<Item>> getTopStories() async {
+Future<List<HnItem>> getTopStories() async {
   final httpClient = createHttpClient();
   final response = await httpClient.get(hnTopStoriesUrl);
 
@@ -22,14 +22,14 @@ Future<List<Item>> getTopStories() async {
   return Future.wait(futures);
 }
 
-Future<List<Item>> getComments(List<int> ids) async {
+Future<List<HnItem>> getComments(List<int> ids) async {
 
   final futures = ids.take(5).map((s) => getStory(s));
 
   return Future.wait(futures);
 }
 
-Future<Item> getStory(int id) async {
+Future<HnItem> getStory(int id) async {
   final httpClient = createHttpClient();
 
   var url = debugMode ? '$hnItemUrl/$id' : '$hnItemUrl/$id.json';
@@ -37,5 +37,5 @@ Future<Item> getStory(int id) async {
 
   Map<String, dynamic> story = jsonCodec.decode(response.body);
 
-  return new Item.fromJson(story);
+  return new HnItem.fromJson(story);
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_news/components/title_section_tile.dart';
 import 'package:flutter_news/item_model.dart';
 import 'package:flutter_news/hn_api.dart';
 
@@ -6,7 +7,7 @@ bool notNull(Object o) => o != null;
 
 class StoryPage extends StatefulWidget {
   final int index;
-  final Item story;
+  final HnItem story;
 
   StoryPage(this.index, this.story);
 
@@ -17,7 +18,7 @@ class StoryPage extends StatefulWidget {
 class _StoryPageState extends State<StoryPage> {
   static final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<
       ScaffoldState>();
-  List<Item> _comments = [];
+  List<HnItem> _comments = [];
 
   initState() {
     super.initState();
@@ -47,25 +48,7 @@ class _StoryPageState extends State<StoryPage> {
         .of(context)
         .textTheme;
 
-    final titleSection = new Container(
-      height: 110.0,
-      padding: new EdgeInsets.fromLTRB(32.0, 32.0, 32.0, 0.0),
-      child: new Column(
-          children: [
-            new Expanded(
-              child: new Text('${widget.story.title}',
-                  style: textTheme.title),
-            ),
-            new Text(
-                'Posted by ${widget.story.user} | ${widget.story.score} Points',
-                style: textTheme.caption),
-            new Text('${widget.story.commentsCount} Comments:',
-                style: textTheme.caption),
-          ]
-      ),
-    );
-
-    final commentCards = _comments.map((Item item) {
+    final commentCards = _comments.map((HnItem item) {
       return new Container(
           padding: new EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 0.0),
           child: new Card(
@@ -90,7 +73,7 @@ class _StoryPageState extends State<StoryPage> {
     });
 
     final listItems = <Widget>[
-      titleSection,
+      new TitleSectionTile(widget.story),
       new Divider()
     ];
 
