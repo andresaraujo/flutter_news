@@ -1,17 +1,17 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:flutter_news/components/story_list_tile.dart';
+import 'package:flutter_news/components/top_item_tile.dart';
 import 'package:flutter_news/hn_api.dart';
 import 'package:flutter_news/item_model.dart';
 import 'package:flutter_news/pages/item_page.dart';
 
 
-class TopStoriesPage extends StatefulWidget {
+class TopItemsPage extends StatefulWidget {
   @override
-  _TopStoriesPageState createState() => new _TopStoriesPageState();
+  _TopItemsPageState createState() => new _TopItemsPageState();
 }
 
-class _TopStoriesPageState extends State<TopStoriesPage> {
+class _TopItemsPageState extends State<TopItemsPage> {
   List<HnItem> _stories = [];
 
   initState() {
@@ -34,7 +34,7 @@ class _TopStoriesPageState extends State<TopStoriesPage> {
   @override
   Widget build(BuildContext context) {
     final storyListTiles = _stories.map((s) {
-      return new StoryListTile(s, onTap: () => _onTapStory(s));
+      return new TopItemTile(s, onTap: () => _onTapStory(s));
     }).toList();
 
     return new Scaffold(

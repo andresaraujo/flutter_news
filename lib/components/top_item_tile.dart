@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_news/item_model.dart';
 
-class StoryListTile extends StatelessWidget {
+class TopItemTile extends StatelessWidget {
   final HnItem story;
   final GestureTapCallback onTap;
 
-  StoryListTile(this.story, {this.onTap});
+  TopItemTile(this.story, {this.onTap});
 
   @override
   Widget build(BuildContext context) {
