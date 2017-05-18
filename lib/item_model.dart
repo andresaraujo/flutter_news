@@ -4,6 +4,9 @@ import 'package:timeago/timeago.dart';
 final fuzzy = new TimeAgo();
 
 class HnItem {
+
+  // Hacker News API: https://github.com/HackerNews/API
+
   int id;
   String title;
   String text;
@@ -31,9 +34,10 @@ class HnItem {
     commentsCount = story['descendants'] ?? 0;
     type = story['type'] ?? 'story';
     deleted = story['deleted'] ?? false;
-    time = story['time'] ?? new DateTime.now().millisecondsSinceEpoch;
+    time = story['time'] ?? new DateTime.now().millisecondsSinceEpoch / 1000;
 
-    timeAgo = fuzzy.timeAgo(time * 1000);
+    timeAgo =
+        fuzzy.format(new DateTime.fromMillisecondsSinceEpoch(time * 1000));
   }
 
   toString() => '{id: $id, title: $title}';

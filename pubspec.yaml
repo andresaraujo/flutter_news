@@ -4,8 +4,8 @@ description: A Hacker News client in flutter
 dependencies:
   flutter:
     sdk: flutter
-  url_launcher: "^0.3.3"
-  timeago: any
+  url_launcher:
+  timeago:
 
 # For information on the generic Dart part of this file, see the
 # following page: https://www.dartlang.org/tools/pub/pubspec
