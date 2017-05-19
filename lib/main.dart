@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 
 import 'package:flutter_news/fnews_configuration.dart';
@@ -19,16 +18,34 @@ class FlutterNewsAppState extends State<FlutterNewsApp> {
     themeName: ThemeName.light,
   );
 
+  @override
+  void initState() {
+    super.initState();
+
+    // Load configuration from shared preferences
+    FlutterNewsConfiguration
+        .loadFromPrefs()
+        .then((FlutterNewsConfiguration config) {
+          if (mounted) {
+            configurationUpdater(config);
+          }
+    });
+  }
+
   // App theme settings
   ThemeData get theme {
     assert(_configuration.themeName != null);
     switch (_configuration.themeName) {
       case ThemeName.light:
         return new ThemeData(
-            brightness: Brightness.light, primarySwatch: Colors.orange);
+            brightness: Brightness.light,
+            primarySwatch: Colors.orange
+        );
       case ThemeName.dark:
         return new ThemeData(
-            brightness: Brightness.dark, accentColor: Colors.orangeAccent);
+            brightness: Brightness.dark,
+            accentColor: Colors.orangeAccent
+        );
     }
     return null;
   }
@@ -41,10 +58,9 @@ class FlutterNewsAppState extends State<FlutterNewsApp> {
 
   @override
   Widget build(BuildContext context) {
-
     return new MaterialApp(
-        theme: theme,
-        home: new TopItemsPage(_configuration, configurationUpdater),
+      theme: theme,
+      home: new TopItemsPage(_configuration, configurationUpdater),
     );
   }
 }

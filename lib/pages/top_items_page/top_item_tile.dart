@@ -9,8 +9,8 @@ class TopItemTile extends StatelessWidget {
   TopItemTile(this.story, {this.onTap});
 
   _buildBadge(int count, Color backgroundColor, TextTheme textTheme) {
-    TextStyle textStyle = textTheme.caption.copyWith(
-        color: Colors.white, fontSize: 10.0);
+    TextStyle textStyle =
+        textTheme.caption.copyWith(color: Colors.white, fontSize: 10.0);
     return new Container(
         margin: const EdgeInsets.only(bottom: 2.0),
         width: 25.0,
@@ -21,18 +21,16 @@ class TopItemTile extends StatelessWidget {
         ),
         child: new Container(
             padding: new EdgeInsets.all(2.0),
-            child: new Center(child: new Text('$count', style: textStyle))
-        )
-    );
+            child: new Center(child: new Text('$count', style: textStyle))));
   }
 
   _buildText(String text, TextTheme textTheme) {
     return new Container(
         padding: new EdgeInsets.only(bottom: 5.0),
-        child: new Text(text,
+        child: new Text(
+          text,
           style: textTheme.caption,
-        )
-    );
+        ));
   }
 
   _buildTop(TextTheme textTheme) {
@@ -56,45 +54,36 @@ class TopItemTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme
-        .of(context);
+    final theme = Theme.of(context);
 
     final textTheme = theme.textTheme;
 
     final badgeChildren = [
-      _buildBadge(story.score, theme.primaryColor, textTheme),
+      _buildBadge(story.score, Colors.orange, textTheme),
       _buildBadge(story.commentsCount, theme.disabledColor, textTheme),
     ];
 
-    final itemColumn = new Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _buildTop(textTheme),
-          _buildText('by ${story.user} | ${story.timeAgo}', textTheme),
-        ]
-    );
+    final itemColumn =
+        new Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      _buildTop(textTheme),
+      _buildText('by ${story.user} | ${story.timeAgo}', textTheme),
+    ]);
 
     return new InkWell(
         onTap: onTap,
         child: new Container(
           padding: new EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-          child: new Row(
-              children: [
-                new Expanded(
-                    child: new Container(
-                      padding: new EdgeInsets.only(right: 10.0),
-                      child: new Column(
-                          children: badgeChildren
-                      ),
-                    )
-                ),
-                new Expanded(
-                  flex: 6,
-                  child: itemColumn,
-                ),
-              ]
-          ),
-        )
-    );
+          child: new Row(children: [
+            new Expanded(
+                child: new Container(
+              padding: new EdgeInsets.only(right: 10.0),
+              child: new Column(children: badgeChildren),
+            )),
+            new Expanded(
+              flex: 6,
+              child: itemColumn,
+            ),
+          ]),
+        ));
   }
 }

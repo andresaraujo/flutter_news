@@ -33,9 +33,11 @@ class TopItemsPageState extends State<TopItemsPage> {
     });
   }
 
-  void _handleThemeChange(ThemeName value) {
+  void _handleThemeChange(ThemeName themeName) {
+    storeThemeToPrefs(themeName);
+
     if (widget.updater != null)
-      widget.updater(widget.configuration.copyWith(themeName: value));
+      widget.updater(widget.configuration.copyWith(themeName: themeName));
   }
 
   _buildNavItem(IconData icon, String title) {
@@ -46,6 +48,10 @@ class TopItemsPageState extends State<TopItemsPage> {
   }
 
   Widget _buildAppTitle(BuildContext context) {
+    Color titleColor = (widget.configuration.themeName == ThemeName.light)
+        ? Colors.white
+        : Colors.orange;
+
     return new Row(mainAxisAlignment: MainAxisAlignment.center, children: [
       new Container(
         margin: const EdgeInsets.only(right: 8.0),
@@ -54,11 +60,11 @@ class TopItemsPageState extends State<TopItemsPage> {
             borderRadius: new BorderRadius.circular(2.0),
             border: new Border.all(
               width: 2.0,
-              color: Colors.white,
+              color: titleColor,
             )),
-        child: new Text('F'),
+        child: new Text('F', style: new TextStyle(color: titleColor) ),
       ),
-      new Text('Flutter News')
+      new Text('Flutter News', style: new TextStyle(color: titleColor))
     ]);
   }
 
