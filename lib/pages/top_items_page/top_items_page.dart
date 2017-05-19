@@ -1,25 +1,25 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+
+import 'package:flutter_news/fnews_configuration.dart';
 import 'package:flutter_news/pages/top_items_page/top_item_tile.dart';
 import 'package:flutter_news/hn_api.dart';
 import 'package:flutter_news/item_model.dart';
 import 'package:flutter_news/pages/item_page/item_page.dart';
 
-enum NavTypes {
-  topStories,
-  newStories,
-  showStories,
-  askStories,
-  jobStories
-}
-
+enum NavTypes { topStories, newStories, showStories, askStories, jobStories }
 
 class TopItemsPage extends StatefulWidget {
+  const TopItemsPage(this.configuration, this.updater);
+
+  final FlutterNewsConfiguration configuration;
+  final ValueChanged<FlutterNewsConfiguration> updater;
+
   @override
-  _TopItemsPageState createState() => new _TopItemsPageState();
+  TopItemsPageState createState() => new TopItemsPageState();
 }
 
-class _TopItemsPageState extends State<TopItemsPage> {
+class TopItemsPageState extends State<TopItemsPage> {
   List<HnItem> _items = [];
   int _selectedNavIndex = 0;
 
@@ -33,6 +33,13 @@ class _TopItemsPageState extends State<TopItemsPage> {
     });
   }
 
+  void _handleThemeChange(ThemeName themeName) {
+    storeThemeToPrefs(themeName);
+
+    if (widget.updater != null)
+      widget.updater(widget.configuration.copyWith(themeName: themeName));
+  }
+
   _buildNavItem(IconData icon, String title) {
     return new BottomNavigationBarItem(
       icon: new Icon(icon),
@@ -40,39 +47,73 @@ class _TopItemsPageState extends State<TopItemsPage> {
     );
   }
 
+  Widget _buildAppTitle(BuildContext context) {
+    Color titleColor = (widget.configuration.themeName == ThemeName.light)
+        ? Colors.white
+        : Colors.orange;
+
+    return new Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+      new Container(
+        margin: const EdgeInsets.only(right: 8.0),
+        padding: const EdgeInsets.symmetric(vertical: 2.0, horizontal: 8.0),
+        decoration: new BoxDecoration(
+            borderRadius: new BorderRadius.circular(2.0),
+            border: new Border.all(
+              width: 2.0,
+              color: titleColor,
+            )),
+        child: new Text('F', style: new TextStyle(color: titleColor) ),
+      ),
+      new Text('Flutter News', style: new TextStyle(color: titleColor))
+    ]);
+  }
+
+  Widget _buildDrawer(BuildContext context) {
+    return new Drawer(
+      child: new ListView(
+        children: <Widget>[
+          const DrawerHeader(
+              child: const Center(child: const Text('Flutter News'))),
+          new ListTile(
+            title: const Text('Light Theme'),
+            trailing: new Radio<ThemeName>(
+              value: ThemeName.light,
+              groupValue: widget.configuration.themeName,
+              onChanged: _handleThemeChange,
+            ),
+            onTap: () {
+              _handleThemeChange(ThemeName.light);
+            },
+          ),
+          new ListTile(
+            title: const Text('Dark Theme'),
+            trailing: new Radio<ThemeName>(
+              value: ThemeName.dark,
+              groupValue: widget.configuration.themeName,
+              onChanged: _handleThemeChange,
+            ),
+            onTap: () {
+              _handleThemeChange(ThemeName.dark);
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    final appTitle = new Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          new Container(
-            margin: const EdgeInsets.only(right: 8.0),
-            padding: const EdgeInsets.symmetric(
-                vertical: 2.0, horizontal: 8.0),
-            decoration: new BoxDecoration(
-                borderRadius: new BorderRadius.circular(2.0),
-                border: new Border.all(
-                  width: 2.0,
-                  color: Colors.white,
-                )
-            ),
-            child: new Text('F'),
-          ),
-          new Text('Flutter News')
-        ]
-    );
-
     final itemTiles = _items.map((s) {
       return new TopItemTile(s, onTap: () => _onTapItem(s));
     }).toList();
 
     return new Scaffold(
         appBar: new AppBar(
-          title: appTitle,
-          elevation: Theme
-              .of(context)
-              .platform == TargetPlatform.iOS ? 0.0 : 4.0,
+          title: _buildAppTitle(context),
+          elevation:
+              Theme.of(context).platform == TargetPlatform.iOS ? 0.0 : 4.0,
         ),
+        drawer: _buildDrawer(context),
         bottomNavigationBar: new BottomNavigationBar(
           items: [
             _buildNavItem(Icons.whatshot, 'Top'),
@@ -88,9 +129,7 @@ class _TopItemsPageState extends State<TopItemsPage> {
             child: new ListView(
               children: itemTiles,
             ),
-            onRefresh: _onRefresh
-        )
-    );
+            onRefresh: _onRefresh));
   }
 
   Future<Null> _onRefresh({int navIndex}) async {
@@ -129,8 +168,7 @@ class _TopItemsPageState extends State<TopItemsPage> {
   void _onTapItem(HnItem story) {
     final page = new MaterialPageRoute(
         settings: new RouteSettings(name: '${story.title}'),
-        builder: (_) => new ItemPage(story)
-    );
+        builder: (_) => new ItemPage(story));
     Navigator.of(context).push(page);
   }
 
@@ -140,4 +178,3 @@ class _TopItemsPageState extends State<TopItemsPage> {
     _onRefresh(navIndex: value);
   }
 }
-
