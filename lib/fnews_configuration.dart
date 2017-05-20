@@ -4,11 +4,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 enum ThemeName { light, dark }
 
-const defaultTheme = ThemeName.light;
+const ThemeName defaultTheme = ThemeName.light;
 
-storeThemeToPrefs(ThemeName themeName) async {
+Future<Null>  storeThemeToPrefs(ThemeName themeName) async {
   assert(themeName != null);
-  SharedPreferences prefs = await SharedPreferences.getInstance();
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
   prefs.setString("theme", themeName.toString());
 }
 
@@ -24,10 +24,10 @@ class FlutterNewsConfiguration {
   }
 
   static Future<FlutterNewsConfiguration> loadFromPrefs() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
 
     ThemeName themeName;
-    String themeString = prefs.getString('theme') ?? defaultTheme.toString();
+    final String themeString = prefs.getString('theme') ?? defaultTheme.toString();
 
     switch (themeString) {
       case 'ThemeName.dark':

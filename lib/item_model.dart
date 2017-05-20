@@ -1,7 +1,7 @@
 import 'package:flutter_news/utils.dart';
 import 'package:timeago/timeago.dart';
 
-final fuzzy = new TimeAgo();
+final TimeAgo fuzzy = new TimeAgo();
 
 class HnItem {
 
@@ -27,7 +27,7 @@ class HnItem {
     id = story['id'] ?? 0;
     title = story['title'] ?? '';
     user = story['by'] ?? '';
-    kids = story['kids'] ?? [];
+    kids = story['kids'] ?? <int>[];
     score = story['score'] ?? 0;
     url = story['url'] ?? '';
     text = formatText(story['text'] ?? '');
@@ -40,5 +40,6 @@ class HnItem {
         fuzzy.format(new DateTime.fromMillisecondsSinceEpoch(time * 1000));
   }
 
-  toString() => '{id: $id, title: $title}';
+  @override
+  String toString() => '{id: $id, title: $title}';
 }

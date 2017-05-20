@@ -21,13 +21,14 @@ class TopItemsPage extends StatefulWidget {
 }
 
 class TopItemsPageState extends State<TopItemsPage> {
-  List<HnItem> _items = [];
+  List<HnItem> _items = <HnItem>[];
   int _selectedNavIndex = 0;
 
-  initState() {
+  @override
+  void initState() {
     super.initState();
 
-    getTopStories().then((stories) {
+    getTopStories().then((List<HnItem> stories) {
       setState(() {
         _items = stories;
       });
@@ -41,7 +42,7 @@ class TopItemsPageState extends State<TopItemsPage> {
       widget.updater(widget.configuration.copyWith(themeName: themeName));
   }
 
-  _buildNavItem(IconData icon, String title) {
+  BottomNavigationBarItem _buildNavItem(IconData icon, String title) {
     return new BottomNavigationBarItem(
       icon: new Icon(icon),
       title: new Text(title),
@@ -49,24 +50,27 @@ class TopItemsPageState extends State<TopItemsPage> {
   }
 
   Widget _buildAppTitle(BuildContext context) {
-    Color titleColor = (widget.configuration.themeName == ThemeName.light)
+    final Color titleColor = (widget.configuration.themeName == ThemeName.light)
         ? Colors.white
         : Colors.orange;
 
-    return new Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-      new Container(
-        margin: const EdgeInsets.only(right: 8.0),
-        padding: const EdgeInsets.symmetric(vertical: 2.0, horizontal: 8.0),
-        decoration: new BoxDecoration(
-            borderRadius: new BorderRadius.circular(2.0),
-            border: new Border.all(
-              width: 2.0,
-              color: titleColor,
-            )),
-        child: new Text('F', style: new TextStyle(color: titleColor) ),
-      ),
-      new Text(FlutterNewsStrings.of(context).title(), style: new TextStyle(color: titleColor))
-    ]);
+    return new Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          new Container(
+            margin: const EdgeInsets.only(right: 8.0),
+            padding: const EdgeInsets.symmetric(vertical: 2.0, horizontal: 8.0),
+            decoration: new BoxDecoration(
+                borderRadius: new BorderRadius.circular(2.0),
+                border: new Border.all(
+                  width: 2.0,
+                  color: titleColor,
+                )),
+            child: new Text('F', style: new TextStyle(color: titleColor)),
+          ),
+          new Text(FlutterNewsStrings.of(context).title(),
+              style: new TextStyle(color: titleColor))
+        ]);
   }
 
   Widget _buildDrawer(BuildContext context) {
@@ -74,7 +78,8 @@ class TopItemsPageState extends State<TopItemsPage> {
       child: new ListView(
         children: <Widget>[
           new DrawerHeader(
-              child: new Center(child: new Text(FlutterNewsStrings.of(context).title()))),
+              child: new Center(
+                  child: new Text(FlutterNewsStrings.of(context).title()))),
           new ListTile(
             title: const Text('Light Theme'),
             trailing: new Radio<ThemeName>(
@@ -104,7 +109,7 @@ class TopItemsPageState extends State<TopItemsPage> {
 
   @override
   Widget build(BuildContext context) {
-    final itemTiles = _items.map((s) {
+    final List<TopItemTile> itemTiles = _items.map((HnItem s) {
       return new TopItemTile(s, onTap: () => _onTapItem(s));
     }).toList();
 
@@ -116,7 +121,7 @@ class TopItemsPageState extends State<TopItemsPage> {
         ),
         drawer: _buildDrawer(context),
         bottomNavigationBar: new BottomNavigationBar(
-          items: [
+          items: <BottomNavigationBarItem>[
             _buildNavItem(Icons.whatshot, 'Top'),
             _buildNavItem(Icons.new_releases, 'New'),
             _buildNavItem(Icons.view_compact, 'Show'),
@@ -135,8 +140,8 @@ class TopItemsPageState extends State<TopItemsPage> {
 
   Future<Null> _onRefresh({int navIndex}) async {
     navIndex ??= _selectedNavIndex;
-    final navType = NavTypes.values[navIndex];
-    var items = <HnItem>[];
+    final NavTypes navType = NavTypes.values[navIndex];
+    List<HnItem> items = <HnItem>[];
 
     setState(() {
       _items = items;
@@ -167,13 +172,14 @@ class TopItemsPageState extends State<TopItemsPage> {
   }
 
   void _onTapItem(HnItem story) {
-    final page = new MaterialPageRoute(
-        settings: new RouteSettings(name: '${story.title}'),
-        builder: (_) => new ItemPage(story));
+    final MaterialPageRoute<Null> page = new MaterialPageRoute<Null>(
+      settings: new RouteSettings(name: '${story.title}'),
+      builder: (_) => new ItemPage(story),
+    );
     Navigator.of(context).push(page);
   }
 
-  _handleNavChange(int value) async {
+  Future<Null> _handleNavChange(int value) async {
     if (value == _selectedNavIndex) return;
 
     _onRefresh(navIndex: value);

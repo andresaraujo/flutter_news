@@ -31,9 +31,9 @@ class FlutterNewsAppState extends State<FlutterNewsApp> {
     FlutterNewsConfiguration
         .loadFromPrefs()
         .then((FlutterNewsConfiguration config) {
-          if (mounted) {
-            configurationUpdater(config);
-          }
+      if (mounted) {
+        configurationUpdater(config);
+      }
     });
   }
 
@@ -43,14 +43,10 @@ class FlutterNewsAppState extends State<FlutterNewsApp> {
     switch (_configuration.themeName) {
       case ThemeName.light:
         return new ThemeData(
-            brightness: Brightness.light,
-            primarySwatch: Colors.orange
-        );
+            brightness: Brightness.light, primarySwatch: Colors.orange);
       case ThemeName.dark:
         return new ThemeData(
-            brightness: Brightness.dark,
-            accentColor: Colors.orangeAccent
-        );
+            brightness: Brightness.dark, accentColor: Colors.orangeAccent);
     }
     return null;
   }
