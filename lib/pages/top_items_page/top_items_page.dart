@@ -21,6 +21,10 @@ class TopItemsPage extends StatefulWidget {
 }
 
 class TopItemsPageState extends State<TopItemsPage> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+  final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
+      new GlobalKey<RefreshIndicatorState>();
+
   List<HnItem> _items = <HnItem>[];
   int _selectedNavIndex = 0;
 
@@ -28,6 +32,13 @@ class TopItemsPageState extends State<TopItemsPage> {
   void initState() {
     super.initState();
 
+    // Show RefreshIndicator
+    final Future<Null> load = new Future<Null>.value(null);
+    load.then((_) {
+      _refreshIndicatorKey.currentState.show();
+    });
+
+    // Load Top stories
     getTopStories().then((List<HnItem> stories) {
       setState(() {
         _items = stories;
@@ -107,35 +118,42 @@ class TopItemsPageState extends State<TopItemsPage> {
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
+  Widget _buildBody(BuildContext context) {
     final List<TopItemTile> itemTiles = _items.map((HnItem s) {
       return new TopItemTile(s, onTap: () => _onTapItem(s));
     }).toList();
 
+    return new RefreshIndicator(
+      key: _refreshIndicatorKey,
+      onRefresh: _onRefresh,
+      child: new ListView(
+        children: itemTiles,
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return new Scaffold(
-        appBar: new AppBar(
-          title: _buildAppTitle(context),
-          elevation:
-              Theme.of(context).platform == TargetPlatform.iOS ? 0.0 : 4.0,
-        ),
-        drawer: _buildDrawer(context),
-        bottomNavigationBar: new BottomNavigationBar(
-          items: <BottomNavigationBarItem>[
-            _buildNavItem(Icons.whatshot, 'Top'),
-            _buildNavItem(Icons.new_releases, 'New'),
-            _buildNavItem(Icons.view_compact, 'Show'),
-            _buildNavItem(Icons.question_answer, 'Ask'),
-            _buildNavItem(Icons.work, 'Jobs'),
-          ],
-          currentIndex: _selectedNavIndex,
-          onTap: _handleNavChange,
-        ),
-        body: new RefreshIndicator(
-            child: new ListView(
-              children: itemTiles,
-            ),
-            onRefresh: _onRefresh));
+      key: _scaffoldKey,
+      appBar: new AppBar(
+        title: _buildAppTitle(context),
+        elevation: Theme.of(context).platform == TargetPlatform.iOS ? 0.0 : 4.0,
+      ),
+      drawer: _buildDrawer(context),
+      bottomNavigationBar: new BottomNavigationBar(
+        items: <BottomNavigationBarItem>[
+          _buildNavItem(Icons.whatshot, 'Top'),
+          _buildNavItem(Icons.new_releases, 'New'),
+          _buildNavItem(Icons.view_compact, 'Show'),
+          _buildNavItem(Icons.question_answer, 'Ask'),
+          _buildNavItem(Icons.work, 'Jobs'),
+        ],
+        currentIndex: _selectedNavIndex,
+        onTap: _handleNavChange,
+      ),
+      body: _buildBody(context),
+    );
   }
 
   Future<Null> _onRefresh({int navIndex}) async {
@@ -181,6 +199,8 @@ class TopItemsPageState extends State<TopItemsPage> {
 
   Future<Null> _handleNavChange(int value) async {
     if (value == _selectedNavIndex) return;
+
+    _refreshIndicatorKey.currentState.show();
 
     _onRefresh(navIndex: value);
   }
