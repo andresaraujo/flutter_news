@@ -7,6 +7,8 @@ dependencies:
   url_launcher:
   timeago:
   shared_preferences:
+  intl: '>=0.14.0 <0.15.0'
+  intl_translation: '>=0.14.0 <0.15.0'
 
 # For information on the generic Dart part of this file, see the
 # following page: https://www.dartlang.org/tools/pub/pubspec

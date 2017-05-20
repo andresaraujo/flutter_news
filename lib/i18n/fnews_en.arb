@@ -1,0 +1,8 @@
+{
+  "title": "Flutter News",
+  "@title": {
+    "description": "Title for the Flutter News application",
+    "type": "text",
+    "placeholders": {}
+  }
+}
