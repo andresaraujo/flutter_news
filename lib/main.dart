@@ -1,7 +1,12 @@
+import 'dart:async';
+import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_news/fnews_configuration.dart';
+import 'package:flutter_news/fnews_strings.dart';
 import 'package:flutter_news/pages/top_items_page/top_items_page.dart';
+
+import 'i18n/fnews_messages_all.dart';
 
 void main() {
   runApp(new FlutterNewsApp());
@@ -56,11 +61,19 @@ class FlutterNewsAppState extends State<FlutterNewsApp> {
     });
   }
 
+  Future<LocaleQueryData> _onLocaleChanged(Locale locale) async {
+    final String localeString = locale.languageCode;
+    await initializeMessages(localeString);
+    Intl.defaultLocale = localeString;
+    return FlutterNewsStrings.instance;
+  }
+
   @override
   Widget build(BuildContext context) {
     return new MaterialApp(
       theme: theme,
       home: new TopItemsPage(_configuration, configurationUpdater),
+      onLocaleChanged: _onLocaleChanged,
     );
   }
 }

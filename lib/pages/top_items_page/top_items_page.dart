@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_news/fnews_configuration.dart';
+import 'package:flutter_news/fnews_strings.dart';
 import 'package:flutter_news/pages/top_items_page/top_item_tile.dart';
 import 'package:flutter_news/hn_api.dart';
 import 'package:flutter_news/item_model.dart';
@@ -64,7 +65,7 @@ class TopItemsPageState extends State<TopItemsPage> {
             )),
         child: new Text('F', style: new TextStyle(color: titleColor) ),
       ),
-      new Text('Flutter News', style: new TextStyle(color: titleColor))
+      new Text(FlutterNewsStrings.of(context).title(), style: new TextStyle(color: titleColor))
     ]);
   }
 
@@ -72,8 +73,8 @@ class TopItemsPageState extends State<TopItemsPage> {
     return new Drawer(
       child: new ListView(
         children: <Widget>[
-          const DrawerHeader(
-              child: const Center(child: const Text('Flutter News'))),
+          new DrawerHeader(
+              child: new Center(child: new Text(FlutterNewsStrings.of(context).title()))),
           new ListTile(
             title: const Text('Light Theme'),
             trailing: new Radio<ThemeName>(
