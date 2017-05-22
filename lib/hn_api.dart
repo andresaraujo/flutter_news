@@ -31,11 +31,13 @@ class HnApi {
     assert(itemId != null);
 
     if (_itemCache.containsKey(itemId)) {
-      return new Future<HnItem>.value(_itemCache[itemId]);
+      return new Future<HnItem>.sync(() {
+        return _itemCache[itemId];
+      });
     }
 
     final String url =
-    _debugMode ? '$_itemUrl/$itemId' : '$_itemUrl/$itemId.json';
+        _debugMode ? '$_itemUrl/$itemId' : '$_itemUrl/$itemId.json';
     final Client httpClient = createHttpClient();
     final Response response = await httpClient.get(url);
 
@@ -70,11 +72,7 @@ class HnApi {
 
   static Future<List<HnItem>> getComments(List<int> ids) async {
     final Iterable<Future<HnItem>> futures =
-    ids.take(5).map((int id) => getHnItem(id));
+        ids.take(5).map((int id) => getHnItem(id));
     return Future.wait(futures);
   }
-
 }
-
-
-
