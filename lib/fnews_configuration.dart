@@ -6,7 +6,7 @@ enum ThemeName { light, dark }
 
 const ThemeName defaultTheme = ThemeName.light;
 
-Future<Null>  storeThemeToPrefs(ThemeName themeName) async {
+Future<Null> storeThemeToPrefs(ThemeName themeName) async {
   assert(themeName != null);
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   prefs.setString("theme", themeName.toString());
@@ -27,7 +27,8 @@ class FlutterNewsConfiguration {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
 
     ThemeName themeName;
-    final String themeString = prefs.getString('theme') ?? defaultTheme.toString();
+    final String themeString =
+        prefs.getString('theme') ?? defaultTheme.toString();
 
     switch (themeString) {
       case 'ThemeName.dark':

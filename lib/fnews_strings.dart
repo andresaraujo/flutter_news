@@ -16,10 +16,6 @@ class FlutterNewsStrings extends LocaleQueryData {
 
   static final FlutterNewsStrings instance = new FlutterNewsStrings();
 
-  String title() => Intl.message(
-      'Flutter Nexs',
-      name: 'title',
-      desc: 'Title for the Flutter News application'
-  );
-
+  String title() => Intl.message('Flutter Nexs',
+      name: 'title', desc: 'Title for the Flutter News application');
 }

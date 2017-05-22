@@ -9,7 +9,9 @@ import 'package:http/http.dart';
 
 const bool debugMode = false;
 
-const String baseUrl = debugMode ? 'http://localhost:3000' : 'https://hacker-news.firebaseio.com/v0';
+const String baseUrl = debugMode
+    ? 'http://localhost:3000'
+    : 'https://hacker-news.firebaseio.com/v0';
 const String topStoriesUrl = '$baseUrl/topstories.json';
 const String newStoriesUrl = '$baseUrl/newstories.json';
 const String showStoriesUrl = '$baseUrl/showstories.json';
@@ -25,7 +27,8 @@ Future<List<HnItem>> getTopStories() async {
 
   final List<int> topStories = jsonCodec.decode(response.body);
 
-  final Iterable<Future<HnItem>> futures = topStories.take(10).map((int s) => getItem(s));
+  final Iterable<Future<HnItem>> futures =
+      topStories.take(10).map((int s) => getItem(s));
   return Future.wait(futures);
 }
 
@@ -35,7 +38,8 @@ Future<List<HnItem>> getNewStories() async {
 
   final List<int> topStories = jsonCodec.decode(response.body);
 
-  final Iterable<Future<HnItem>> futures = topStories.take(10).map((int s) => getItem(s));
+  final Iterable<Future<HnItem>> futures =
+      topStories.take(10).map((int s) => getItem(s));
   return Future.wait(futures);
 }
 
@@ -45,7 +49,8 @@ Future<List<HnItem>> getShowStories() async {
 
   final List<int> topStories = jsonCodec.decode(response.body);
 
-  final Iterable<Future<HnItem>> futures = topStories.take(10).map((int s) => getItem(s));
+  final Iterable<Future<HnItem>> futures =
+      topStories.take(10).map((int s) => getItem(s));
   return Future.wait(futures);
 }
 
@@ -55,7 +60,8 @@ Future<List<HnItem>> getAskStories() async {
 
   final List<int> topStories = jsonCodec.decode(response.body);
 
-  final Iterable<Future<HnItem>> futures = topStories.take(10).map((int s) => getItem(s));
+  final Iterable<Future<HnItem>> futures =
+      topStories.take(10).map((int s) => getItem(s));
   return Future.wait(futures);
 }
 
@@ -65,12 +71,14 @@ Future<List<HnItem>> getJobStories() async {
 
   final List<int> topStories = jsonCodec.decode(response.body);
 
-  final Iterable<Future<HnItem>> futures = topStories.take(10).map((int s) => getItem(s));
+  final Iterable<Future<HnItem>> futures =
+      topStories.take(10).map((int s) => getItem(s));
   return Future.wait(futures);
 }
 
 Future<List<HnItem>> getComments(List<int> ids) async {
-  final Iterable<Future<HnItem>> futures = ids.take(5).map((int s) => getItem(s));
+  final Iterable<Future<HnItem>> futures =
+      ids.take(5).map((int s) => getItem(s));
   return Future.wait(futures);
 }
 

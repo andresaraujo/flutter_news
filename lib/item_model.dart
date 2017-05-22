@@ -4,7 +4,6 @@ import 'package:timeago/timeago.dart';
 final TimeAgo fuzzy = new TimeAgo();
 
 class HnItem {
-
   // Hacker News API: https://github.com/HackerNews/API
 
   int id;
