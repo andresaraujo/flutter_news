@@ -66,7 +66,6 @@ class TopItemsPageState extends State<TopItemsPage> {
         : Colors.orange;
 
     return new Row(
-        mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           new Container(
             margin: const EdgeInsets.only(right: 8.0),

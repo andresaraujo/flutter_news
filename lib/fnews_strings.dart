@@ -6,8 +6,8 @@ import 'package:flutter/widgets.dart';
 //
 // Locale-specific values for the strings live in the i18n/*.arb files.
 //
-// To generate the stock_messages_*.dart files from the ARB files, run:
-//   pub run intl_translation:generate_from_arb --output-dir=lib/i18n --generated-file-prefix=fnews_ --no-use-deferred-loading lib/fnews_strings.dart lib/i18n/fnews_*.arb
+// To generate the fnews_messages_*.dart files from the ARB files, run:
+// pub global run intl_translation:generate_from_arb --output-dir=lib/i18n --generated-file-prefix=fnews_ --no-use-deferred-loading lib/fnews_strings.dart lib/i18n/fnews_*.arb
 
 class FlutterNewsStrings extends LocaleQueryData {
   static FlutterNewsStrings of(BuildContext context) {
@@ -16,10 +16,6 @@ class FlutterNewsStrings extends LocaleQueryData {
 
   static final FlutterNewsStrings instance = new FlutterNewsStrings();
 
-  String title() => Intl.message(
-      'Flutter Nexs',
-      name: 'title',
-      desc: 'Title for the Flutter News application'
-  );
-
+  String title() => Intl.message('Flutter News',
+      name: 'title', desc: 'Title for the Flutter News application');
 }
