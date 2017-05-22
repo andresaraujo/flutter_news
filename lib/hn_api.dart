@@ -28,11 +28,12 @@ const int _storyLimit2 = 200;
 
 const JsonCodec _jsonCodec = const JsonCodec();
 
-Future<HnItem> _getItem(int itemId) async {
-  final Client httpClient = createHttpClient();
+Future<HnItem> getHnItem(int itemId) async {
+  assert(itemId != null);
 
   final String url =
       _debugMode ? '$_itemUrl/$itemId' : '$_itemUrl/$itemId.json';
+  final Client httpClient = createHttpClient();
   final Response response = await httpClient.get(url);
 
   final Map<String, dynamic> story = _jsonCodec.decode(response.body);
@@ -40,44 +41,29 @@ Future<HnItem> _getItem(int itemId) async {
   return new HnItem.fromJson(story);
 }
 
-Future<List<HnItem>> _getStories(String storiesUrl,
-    {int from = 0, int count = 10, int limit = _storyLimit2}) async {
-  // Input sanity check
+Future<List<int>> _getStoryIds(String storiesUrl) async {
   assert(storiesUrl != null);
-  assert(from >= 0);
-  assert(count >= 0);
-
-  // Make sure we will not get over max. story count
-  if (count > limit) count = limit;
-  if ((from + count) > limit) count = limit - from;
 
   final Client httpClient = createHttpClient();
   final Response response = await httpClient.get(storiesUrl);
 
   final List<int> listStories = _jsonCodec.decode(response.body);
 
-  final Iterable<Future<HnItem>> stories =
-      listStories.skip(from).take(count).map((int id) => _getItem(id));
-  return Future.wait(stories);
+  return listStories;
 }
 
-Future<List<HnItem>> getTopStories({int from = 0, int count = 10}) async =>
-    _getStories(_topStoriesUrl, from: from, count: count, limit: _storyLimit1);
+Future<List<int>> getTopStoryIds() => _getStoryIds(_topStoriesUrl);
 
-Future<List<HnItem>> getNewStories({int from = 0, int count = 10}) async =>
-    _getStories(_newStoriesUrl, from: from, count: count, limit: _storyLimit1);
+Future<List<int>> getNewStoryIds() => _getStoryIds(_newStoriesUrl);
 
-Future<List<HnItem>> getShowStories({int from = 0, int count = 10}) async =>
-    _getStories(_showStoriesUrl, from: from, count: count, limit: _storyLimit2);
+Future<List<int>> getShowStoryIds() => _getStoryIds(_showStoriesUrl);
 
-Future<List<HnItem>> getAskStories({int from = 0, int count = 10}) async =>
-    _getStories(_askStoriesUrl, from: from, count: count, limit: _storyLimit2);
+Future<List<int>> getAskStoryIds() => _getStoryIds(_askStoriesUrl);
 
-Future<List<HnItem>> getJobStories({int from = 0, int count = 10}) async =>
-    _getStories(_jobStoriesUrl, from: from, count: count, limit: _storyLimit2);
+Future<List<int>> getJobStoryIds() => _getStoryIds(_jobStoriesUrl);
 
 Future<List<HnItem>> getComments(List<int> ids) async {
   final Iterable<Future<HnItem>> futures =
-      ids.take(5).map((int id) => _getItem(id));
+      ids.take(5).map((int id) => getHnItem(id));
   return Future.wait(futures);
 }

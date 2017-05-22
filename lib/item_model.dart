@@ -7,16 +7,16 @@ class HnItem {
   // Hacker News API: https://github.com/HackerNews/API
 
   int id;
-  String title;
-  String text;
-  String type;
-  bool deleted;
-  int time;
-  String url;
-  String user;
+  String title = "";
+  String text = "";
+  String type = "";
+  bool deleted = false;
+  int time = 0;
+  String url = "";
+  String user = "";
   int score = 0;
   int commentsCount = 0;
-  List<int> kids;
+  List<int> kids = <int>[];
 
   String timeAgo;
 

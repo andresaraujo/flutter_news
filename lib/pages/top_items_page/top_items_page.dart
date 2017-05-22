@@ -25,7 +25,7 @@ class TopItemsPageState extends State<TopItemsPage> {
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
       new GlobalKey<RefreshIndicatorState>();
 
-  List<HnItem> _items = <HnItem>[];
+  List<int> _itemIds = <int>[];
   int _selectedNavIndex = 0;
 
   @override
@@ -39,9 +39,9 @@ class TopItemsPageState extends State<TopItemsPage> {
     });
 
     // Load Top stories
-    getTopStories().then((List<HnItem> stories) {
+    getTopStoryIds().then((List<int> storyIds) {
       setState(() {
-        _items = stories;
+        _itemIds = storyIds;
       });
     });
   }
@@ -65,22 +65,21 @@ class TopItemsPageState extends State<TopItemsPage> {
         ? Colors.white
         : Colors.orange;
 
-    return new Row(
-        children: <Widget>[
-          new Container(
-            margin: const EdgeInsets.only(right: 8.0),
-            padding: const EdgeInsets.symmetric(vertical: 2.0, horizontal: 8.0),
-            decoration: new BoxDecoration(
-                borderRadius: new BorderRadius.circular(2.0),
-                border: new Border.all(
-                  width: 2.0,
-                  color: titleColor,
-                )),
-            child: new Text('F', style: new TextStyle(color: titleColor)),
-          ),
-          new Text(FlutterNewsStrings.of(context).title(),
-              style: new TextStyle(color: titleColor))
-        ]);
+    return new Row(children: <Widget>[
+      new Container(
+        margin: const EdgeInsets.only(right: 8.0),
+        padding: const EdgeInsets.symmetric(vertical: 2.0, horizontal: 8.0),
+        decoration: new BoxDecoration(
+            borderRadius: new BorderRadius.circular(2.0),
+            border: new Border.all(
+              width: 2.0,
+              color: titleColor,
+            )),
+        child: new Text('F', style: new TextStyle(color: titleColor)),
+      ),
+      new Text(FlutterNewsStrings.of(context).title(),
+          style: new TextStyle(color: titleColor))
+    ]);
   }
 
   Widget _buildDrawer(BuildContext context) {
@@ -118,15 +117,28 @@ class TopItemsPageState extends State<TopItemsPage> {
   }
 
   Widget _buildBody(BuildContext context) {
-    final List<TopItemTile> itemTiles = _items.map((HnItem s) {
-      return new TopItemTile(s, onTap: () => _onTapItem(s));
-    }).toList();
+    final EdgeInsets padding = const EdgeInsets.all(8.0);
 
     return new RefreshIndicator(
       key: _refreshIndicatorKey,
       onRefresh: _onRefresh,
-      child: new ListView(
-        children: itemTiles,
+      child: new CustomScrollView(
+        slivers: <Widget>[
+          new SliverPadding(
+            padding: padding,
+            sliver: new SliverList(
+              delegate: new SliverChildBuilderDelegate(
+                (BuildContext context, int index) {
+                  final int storyId = _itemIds[index];
+                  return new TopItemTile(
+                    storyId,
+                  );
+                },
+                childCount: _itemIds.length,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -158,42 +170,34 @@ class TopItemsPageState extends State<TopItemsPage> {
   Future<Null> _onRefresh({int navIndex}) async {
     navIndex ??= _selectedNavIndex;
     final NavTypes navType = NavTypes.values[navIndex];
-    List<HnItem> items = <HnItem>[];
+    List<int> items = <int>[];
 
     setState(() {
-      _items = items;
+      _itemIds = items;
       _selectedNavIndex = navIndex;
     });
 
     switch (navType) {
       case NavTypes.topStories:
-        items = await getTopStories();
+        items = await getTopStoryIds();
         break;
       case NavTypes.newStories:
-        items = await getNewStories();
+        items = await getNewStoryIds();
         break;
       case NavTypes.showStories:
-        items = await getShowStories();
+        items = await getShowStoryIds();
         break;
       case NavTypes.askStories:
-        items = await getAskStories();
+        items = await getAskStoryIds();
         break;
       case NavTypes.jobStories:
-        items = await getJobStories();
+        items = await getJobStoryIds();
         break;
     }
 
     setState(() {
-      _items = items;
+      _itemIds = items;
     });
-  }
-
-  void _onTapItem(HnItem story) {
-    final MaterialPageRoute<Null> page = new MaterialPageRoute<Null>(
-      settings: new RouteSettings(name: '${story.title}'),
-      builder: (_) => new ItemPage(story),
-    );
-    Navigator.of(context).push(page);
   }
 
   Future<Null> _handleNavChange(int value) async {
