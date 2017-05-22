@@ -7,63 +7,74 @@ import 'package:flutter/services.dart';
 import 'package:flutter_news/item_model.dart';
 import 'package:http/http.dart';
 
-const bool _debugMode = false;
+class HnApi {
+  static const bool _debugMode = false;
 
-const String _baseUrl = _debugMode
-    ? 'http://localhost:3000'
-    : 'https://hacker-news.firebaseio.com/v0';
-const String _topStoriesUrl = '$_baseUrl/topstories.json';
-const String _newStoriesUrl = '$_baseUrl/newstories.json';
-const String _bestStoriesUrl = '$_baseUrl/beststories.json';
-const String _showStoriesUrl = '$_baseUrl/showstories.json';
-const String _jobStoriesUrl = '$_baseUrl/jobstories.json';
-const String _askStoriesUrl = '$_baseUrl/askstories.json';
-const String _itemUrl = '$_baseUrl/item';
+  static const String _baseUrl = _debugMode
+      ? 'http://localhost:3000'
+      : 'https://hacker-news.firebaseio.com/v0';
+  static const String _topStoriesUrl = '$_baseUrl/topstories.json';
+  static const String _newStoriesUrl = '$_baseUrl/newstories.json';
+  //static const String _bestStoriesUrl = '$_baseUrl/beststories.json';
+  static const String _showStoriesUrl = '$_baseUrl/showstories.json';
+  static const String _jobStoriesUrl = '$_baseUrl/jobstories.json';
+  static const String _askStoriesUrl = '$_baseUrl/askstories.json';
+  static const String _itemUrl = '$_baseUrl/item';
 
-// Max. number of stories for New, Top and Best
-const int _storyLimit1 = 500;
+  static const JsonCodec _jsonCodec = const JsonCodec();
 
-// Max. number of stories for Ask, Show and Job
-const int _storyLimit2 = 200;
+  static final Map<int, HnItem> _itemCache = <int, HnItem>{};
 
-const JsonCodec _jsonCodec = const JsonCodec();
+  HnApi();
 
-Future<HnItem> getHnItem(int itemId) async {
-  assert(itemId != null);
+  static Future<HnItem> getHnItem(int itemId) async {
+    assert(itemId != null);
 
-  final String url =
-      _debugMode ? '$_itemUrl/$itemId' : '$_itemUrl/$itemId.json';
-  final Client httpClient = createHttpClient();
-  final Response response = await httpClient.get(url);
+    if (_itemCache.containsKey(itemId)) {
+      return new Future<HnItem>.value(_itemCache[itemId]);
+    }
 
-  final Map<String, dynamic> story = _jsonCodec.decode(response.body);
+    final String url =
+    _debugMode ? '$_itemUrl/$itemId' : '$_itemUrl/$itemId.json';
+    final Client httpClient = createHttpClient();
+    final Response response = await httpClient.get(url);
 
-  return new HnItem.fromJson(story);
+    final Map<String, dynamic> story = _jsonCodec.decode(response.body);
+
+    final HnItem hnItem = new HnItem.fromJson(story);
+    _itemCache[story['id']] = hnItem;
+
+    return hnItem;
+  }
+
+  static Future<List<int>> _getStoryIds(String storiesUrl) async {
+    assert(storiesUrl != null);
+
+    final Client httpClient = createHttpClient();
+    final Response response = await httpClient.get(storiesUrl);
+
+    final List<int> listStories = _jsonCodec.decode(response.body);
+
+    return listStories;
+  }
+
+  static Future<List<int>> getTopStoryIds() => _getStoryIds(_topStoriesUrl);
+
+  static Future<List<int>> getNewStoryIds() => _getStoryIds(_newStoriesUrl);
+
+  static Future<List<int>> getShowStoryIds() => _getStoryIds(_showStoriesUrl);
+
+  static Future<List<int>> getAskStoryIds() => _getStoryIds(_askStoriesUrl);
+
+  static Future<List<int>> getJobStoryIds() => _getStoryIds(_jobStoriesUrl);
+
+  static Future<List<HnItem>> getComments(List<int> ids) async {
+    final Iterable<Future<HnItem>> futures =
+    ids.take(5).map((int id) => getHnItem(id));
+    return Future.wait(futures);
+  }
+
 }
 
-Future<List<int>> _getStoryIds(String storiesUrl) async {
-  assert(storiesUrl != null);
 
-  final Client httpClient = createHttpClient();
-  final Response response = await httpClient.get(storiesUrl);
 
-  final List<int> listStories = _jsonCodec.decode(response.body);
-
-  return listStories;
-}
-
-Future<List<int>> getTopStoryIds() => _getStoryIds(_topStoriesUrl);
-
-Future<List<int>> getNewStoryIds() => _getStoryIds(_newStoriesUrl);
-
-Future<List<int>> getShowStoryIds() => _getStoryIds(_showStoriesUrl);
-
-Future<List<int>> getAskStoryIds() => _getStoryIds(_askStoriesUrl);
-
-Future<List<int>> getJobStoryIds() => _getStoryIds(_jobStoriesUrl);
-
-Future<List<HnItem>> getComments(List<int> ids) async {
-  final Iterable<Future<HnItem>> futures =
-      ids.take(5).map((int id) => getHnItem(id));
-  return Future.wait(futures);
-}

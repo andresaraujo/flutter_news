@@ -18,7 +18,7 @@ class HnItem {
   int commentsCount = 0;
   List<int> kids = <int>[];
 
-  String timeAgo;
+  String timeAgo = "";
 
   HnItem();
 

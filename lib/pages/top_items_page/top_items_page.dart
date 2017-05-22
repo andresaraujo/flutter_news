@@ -5,8 +5,6 @@ import 'package:flutter_news/fnews_configuration.dart';
 import 'package:flutter_news/fnews_strings.dart';
 import 'package:flutter_news/pages/top_items_page/top_item_tile.dart';
 import 'package:flutter_news/hn_api.dart';
-import 'package:flutter_news/item_model.dart';
-import 'package:flutter_news/pages/item_page/item_page.dart';
 
 enum NavTypes { topStories, newStories, showStories, askStories, jobStories }
 
@@ -39,7 +37,7 @@ class TopItemsPageState extends State<TopItemsPage> {
     });
 
     // Load Top stories
-    getTopStoryIds().then((List<int> storyIds) {
+    HnApi.getTopStoryIds().then((List<int> storyIds) {
       setState(() {
         _itemIds = storyIds;
       });
@@ -179,19 +177,19 @@ class TopItemsPageState extends State<TopItemsPage> {
 
     switch (navType) {
       case NavTypes.topStories:
-        items = await getTopStoryIds();
+        items = await HnApi.getTopStoryIds();
         break;
       case NavTypes.newStories:
-        items = await getNewStoryIds();
+        items = await HnApi.getNewStoryIds();
         break;
       case NavTypes.showStories:
-        items = await getShowStoryIds();
+        items = await HnApi.getShowStoryIds();
         break;
       case NavTypes.askStories:
-        items = await getAskStoryIds();
+        items = await HnApi.getAskStoryIds();
         break;
       case NavTypes.jobStories:
-        items = await getJobStoryIds();
+        items = await HnApi.getJobStoryIds();
         break;
     }
 

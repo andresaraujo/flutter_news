@@ -21,7 +21,7 @@ class _StoryPageState extends State<ItemPage> {
   @override
   void initState() {
     super.initState();
-    getComments(widget.item.kids).then((List<HnItem> items) {
+    HnApi.getComments(widget.item.kids).then((List<HnItem> items) {
       setState(() {
         _comments = items;
       });

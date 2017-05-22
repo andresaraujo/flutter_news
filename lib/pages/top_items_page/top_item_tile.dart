@@ -14,6 +14,7 @@ class TopItemTile extends StatefulWidget {
 }
 
 class TopItemTileState extends State<TopItemTile> {
+
   HnItem _story = new HnItem();
 
   @override
@@ -21,7 +22,7 @@ class TopItemTileState extends State<TopItemTile> {
     super.initState();
 
     // Load story contents
-    getHnItem(widget.storyId).then((HnItem hnItem) {
+    HnApi.getHnItem(widget.storyId).then((HnItem hnItem) {
       if (mounted) {
         setState(() {
           _story = hnItem;
