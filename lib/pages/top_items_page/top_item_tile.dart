@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_news/hn_api.dart';
-import 'package:flutter_news/item_model.dart';
 import 'package:flutter_news/pages/item_page/item_page.dart';
 import 'package:flutter_news/utils.dart';
 
@@ -15,20 +14,24 @@ class TopItemTile extends StatefulWidget {
 
 class TopItemTileState extends State<TopItemTile> {
 
-  HnItem _story = new HnItem();
+  HnItem _story;
 
   @override
   void initState() {
     super.initState();
 
-    // Load story contents
-    HnApi.getHnItem(widget.storyId).then((HnItem hnItem) {
-      if (mounted) {
-        setState(() {
-          _story = hnItem;
-        });
-      }
-    });
+    _story = new HnItem(widget.storyId);
+
+    if (! _story.cached) {
+      // Load story contents
+      _story.fetch().then((HnItem hnItem) {
+        if (mounted) {
+          setState(() {
+            _story = hnItem;
+          });
+        }
+      });
+    }
   }
 
   void _onTapItem(HnItem story) {
