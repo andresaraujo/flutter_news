@@ -3,51 +3,47 @@ import 'package:flutter_news/item_model.dart';
 import 'package:flutter_news/utils.dart';
 
 class TitleSectionTile extends StatelessWidget {
-
   final HnItem item;
 
   TitleSectionTile(this.item);
 
-  _buildText(String text, TextStyle style) {
+  Widget _buildText(String text, TextStyle style) {
     return new Text(text, style: style);
   }
 
-  _buildTop(String title, String url, TextTheme textTheme) {
-    final children = [];
+  Widget _buildTop(String title, String url, TextTheme textTheme) {
+    final List<TextSpan> children = <TextSpan>[];
 
-    if(url.isNotEmpty) {
-      children.add(
-        new TextSpan(text: '(${parseDomain(url)})', style: textTheme.caption)
-      );
+    if (url.isNotEmpty) {
+      children.add(new TextSpan(
+          text: '(${parseDomain(url)})', style: textTheme.caption));
     }
     return new Padding(
         padding: const EdgeInsets.only(bottom: 5.0),
-        child: new RichText(text: new TextSpan(
+        child: new RichText(
+            text: new TextSpan(
           text: '$title ',
           style: textTheme.title,
           children: children,
-        ))
-    );
+        )));
   }
 
   @override
   Widget build(BuildContext context) {
-    final TextTheme textTheme = Theme
-        .of(context)
-        .textTheme;
+    final TextTheme textTheme = Theme.of(context).textTheme;
 
-    final captionStyle = textTheme.caption;
+    final TextStyle captionStyle = textTheme.caption;
 
     Widget top = _buildTop(item.title, item.url, textTheme);
-    Widget bottom = _buildText('${item.score} Points | by ${item.user}',
-        captionStyle);
+    Widget bottom =
+        _buildText('${item.score} Points | by ${item.user}', captionStyle);
 
     if (item.type == 'comment') {
       top = new Text('${item.text}', style: textTheme.body2);
       bottom = new Container();
     }
 
-    final children = [
+    final List<Widget> children = <Widget>[
       top,
       bottom,
     ];
