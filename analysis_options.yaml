@@ -32,7 +32,7 @@ analyzer:
     # allow having TODOs in the code
     todo: ignore
   exclude:
-    - 'lib/i18n/fnews_messages_*.dart'
+    - 'lib/i18n/*.dart'
 
 linter:
   rules:
