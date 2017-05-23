@@ -5,7 +5,7 @@ import 'package:flutter_news/hn_api.dart';
 import 'package:flutter_news/utils.dart';
 
 class ItemPage extends StatefulWidget {
-  final HnItem item;
+  final HnItem2 item;
 
   ItemPage(this.item);
 
@@ -15,19 +15,19 @@ class ItemPage extends StatefulWidget {
 
 class _StoryPageState extends State<ItemPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
-  List<HnItem> _comments = <HnItem>[];
+  List<HnItem2> _comments = <HnItem2>[];
 
   @override
   void initState() {
     super.initState();
-    HnApi.getComments(widget.item.kids).then((List<HnItem> items) {
+    HnApi.getComments(widget.item.kids).then((List<HnItem2> items) {
       setState(() {
         _comments = items;
       });
     });
   }
 
-  Widget _buildReplyButton(HnItem item) {
+  Widget _buildReplyButton(HnItem2 item) {
     if (item.kids.length == 0) return null;
 
     return new ButtonTheme.bar(
@@ -47,7 +47,7 @@ class _StoryPageState extends State<ItemPage> {
     final TextTheme textTheme = Theme.of(context).textTheme;
 
     final Iterable<Container> commentCards =
-        _comments.where((HnItem i) => !i.deleted).map((HnItem item) {
+        _comments.where((HnItem2 i) => !i.deleted).map((HnItem2 item) {
       return new Container(
           padding: new EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 0.0),
           child: new Card(
@@ -108,7 +108,7 @@ class _StoryPageState extends State<ItemPage> {
         ));
   }
 
-  void _onShowRepliesPressed(HnItem item) {
+  void _onShowRepliesPressed(HnItem2 item) {
     final MaterialPageRoute<Null> page = new MaterialPageRoute<Null>(
       settings: new RouteSettings(name: '${item.title}'),
       builder: (_) => new ItemPage(item),

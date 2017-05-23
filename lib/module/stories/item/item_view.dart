@@ -1,47 +1,58 @@
+import 'package:timeago/timeago.dart';
+
 import 'package:flutter/material.dart';
-import 'package:flutter_news/hn_api.dart';
-import 'package:flutter_news/pages/item_page/item_page.dart';
+
 import 'package:flutter_news/utils.dart';
+import 'package:flutter_news/model/hn_item.dart';
+import 'package:flutter_news/module/stories/item/item_presenter.dart';
 
-class TopItemTile extends StatefulWidget {
-  final int storyId;
+class ItemTile extends StatefulWidget {
+  final int itemId;
 
-  TopItemTile(this.storyId);
+  ItemTile(this.itemId);
 
   @override
-  TopItemTileState createState() => new TopItemTileState();
+  ItemTileState createState() => new ItemTileState();
 }
 
-class TopItemTileState extends State<TopItemTile> {
+class ItemTileState extends State<ItemTile> implements ItemViewContract {
+  HnItem _item;
 
-  HnItem2 _story;
+  ItemPresenter _presenter;
+
+  ItemTileState() {
+    _presenter = new ItemPresenter(this);
+  }
 
   @override
   void initState() {
     super.initState();
 
-    _story = new HnItem2(widget.storyId);
+    _presenter.loadItem(widget.itemId);
+  }
 
-    if (! _story.cached) {
-      // Load story contents
-      /*
-      _story.fetch().then((HnItem hnItem) {
-        if (mounted) {
-          setState(() {
-            _story = hnItem;
-          });
-        }
+  @override
+  void onLoadItemComplete(HnItem item) {
+    if (mounted) {
+      setState(() {
+        _item = item;
       });
-      */
     }
   }
 
-  void _onTapItem(HnItem2 story) {
+  @override
+  void onLoadItemError() {
+    // TODO: implement onLoadItemError
+  }
+
+  void _onTapItem(HnItem item) {
+    /*
     final MaterialPageRoute<Null> page = new MaterialPageRoute<Null>(
-      settings: new RouteSettings(name: '${story.title}'),
-      builder: (_) => new ItemPage(story),
+      settings: new RouteSettings(name: '${item.title}'),
+      builder: (_) => new ItemPage(item),
     );
     Navigator.of(context).push(page);
+    */
   }
 
   Widget _buildBadge(int count, Color backgroundColor, TextTheme textTheme) {
@@ -73,16 +84,16 @@ class TopItemTileState extends State<TopItemTile> {
   Widget _buildTop(TextTheme textTheme) {
     final List<TextSpan> children = <TextSpan>[];
 
-    if (_story.url.isNotEmpty) {
+    if (_item.url.isNotEmpty) {
       children.add(new TextSpan(
-        text: '(${parseDomain(_story.url)})',
+        text: '(${parseDomain(_item.url)})',
         style: textTheme.caption,
       ));
     }
 
     return new RichText(
       text: new TextSpan(
-        text: _story.title.length > 0 ? '${_story.title} ' : "Loading...",
+        text: _item.title.length > 0 ? '${_item.title} ' : "Loading...",
         style: textTheme.body2,
         children: children,
       ),
@@ -95,22 +106,25 @@ class TopItemTileState extends State<TopItemTile> {
 
     final TextTheme textTheme = theme.textTheme;
 
+    final TimeAgo fuzzyTime = new TimeAgo();
+    final String timeAgo = fuzzyTime.format(new DateTime.fromMillisecondsSinceEpoch(_item.time * 1000));
+
     final List<Widget> badgeChildren = <Widget>[
-      _buildBadge(_story.score, Colors.orange, textTheme),
-      _buildBadge(_story.commentsCount, theme.disabledColor, textTheme),
+      _buildBadge(_item.score, Colors.orange, textTheme),
+      _buildBadge(_item.commentsCount, theme.disabledColor, textTheme),
     ];
 
     final Widget itemColumn = new Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           _buildTop(textTheme),
-          _story.user.length > 0
-              ? _buildText('by ${_story.user} | ${_story.timeAgo}', textTheme)
-              : _buildText('id ' + widget.storyId.toString(), textTheme),
+          _item.user.length > 0
+              ? _buildText('by ${_item.user} | $timeAgo', textTheme)
+              : _buildText('id ' + widget.itemId.toString(), textTheme),
         ]);
 
     return new InkWell(
-        onTap: () => _onTapItem(_story),
+        onTap: () => _onTapItem(_item),
         child: new Container(
           padding: new EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
           child: new Row(children: <Widget>[

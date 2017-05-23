@@ -3,7 +3,7 @@ import 'package:flutter_news/hn_api.dart';
 import 'package:flutter_news/utils.dart';
 
 class TitleSectionTile extends StatelessWidget {
-  final HnItem item;
+  final HnItem2 item;
 
   TitleSectionTile(this.item);
 

@@ -46,18 +46,18 @@ class HnApi {
 
   static Future<List<int>> getJobStoryIds() => _getStoryIds(_jobStoriesUrl);
 
-  static Future<List<HnItem>> getComments(List<int> ids) async {
-    final Iterable<Future<HnItem>> futures = ids.take(5).map((int id) {
-      return new HnItem(id).fetch();
+  static Future<List<HnItem2>> getComments(List<int> ids) async {
+    final Iterable<Future<HnItem2>> futures = ids.take(5).map((int id) {
+      return new HnItem2(id).fetch();
     });
     return Future.wait(futures);
   }
 }
 
-class HnItem {
+class HnItem2 {
   static const String _itemUrl = '$_baseUrl/item';
 
-  static final Map<int, HnItem> _cache = <int, HnItem>{};
+  static final Map<int, HnItem2> _cache = <int, HnItem2>{};
 
   final TimeAgo fuzzyTime = new TimeAgo();
 
@@ -75,19 +75,19 @@ class HnItem {
   List<int> kids;
   String timeAgo;
 
-  factory HnItem(int itemId) {
+  factory HnItem2(int itemId) {
     assert(itemId != null);
 
     if (_cache.containsKey(itemId)) {
       return _cache[itemId];
     } else {
-      final HnItem hnItem = new HnItem._internal(itemId);
+      final HnItem2 hnItem = new HnItem2._internal(itemId);
       _cache[itemId] = hnItem;
       return hnItem;
     }
   }
 
-  HnItem._internal(int itemId)
+  HnItem2._internal(int itemId)
       : id = itemId,
         cached = false,
         title = "",
@@ -103,7 +103,7 @@ class HnItem {
         timeAgo = "";
 
   // Fetch item data and update current instance
-  Future<HnItem> fetch() async {
+  Future<HnItem2> fetch() async {
     final String fetchUrl = _debugMode ? '$_itemUrl/$id' : '$_itemUrl/$id.json';
     final Client httpClient = createHttpClient();
     final Response response = await httpClient.get(fetchUrl);
@@ -132,3 +132,4 @@ class HnItem {
   @override
   String toString() => '{id: $id, title: $title}';
 }
+
