@@ -5,8 +5,6 @@ import 'package:flutter_news/fnews_configuration.dart';
 import 'package:flutter_news/fnews_strings.dart';
 import 'package:flutter_news/pages/top_items_page/top_item_tile.dart';
 import 'package:flutter_news/hn_api.dart';
-import 'package:flutter_news/item_model.dart';
-import 'package:flutter_news/pages/item_page/item_page.dart';
 
 enum NavTypes { topStories, newStories, showStories, askStories, jobStories }
 
@@ -21,16 +19,27 @@ class TopItemsPage extends StatefulWidget {
 }
 
 class TopItemsPageState extends State<TopItemsPage> {
-  List<HnItem> _items = <HnItem>[];
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+  final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
+      new GlobalKey<RefreshIndicatorState>();
+
+  List<int> _itemIds = <int>[];
   int _selectedNavIndex = 0;
 
   @override
   void initState() {
     super.initState();
 
-    getTopStories().then((List<HnItem> stories) {
+    // Show RefreshIndicator
+    final Future<Null> load = new Future<Null>.value(null);
+    load.then((_) {
+      _refreshIndicatorKey.currentState.show();
+    });
+
+    // Load Top stories
+    HnApi.getTopStoryIds().then((List<int> storyIds) {
       setState(() {
-        _items = stories;
+        _itemIds = storyIds;
       });
     });
   }
@@ -54,22 +63,21 @@ class TopItemsPageState extends State<TopItemsPage> {
         ? Colors.white
         : Colors.orange;
 
-    return new Row(
-        children: <Widget>[
-          new Container(
-            margin: const EdgeInsets.only(right: 8.0),
-            padding: const EdgeInsets.symmetric(vertical: 2.0, horizontal: 8.0),
-            decoration: new BoxDecoration(
-                borderRadius: new BorderRadius.circular(2.0),
-                border: new Border.all(
-                  width: 2.0,
-                  color: titleColor,
-                )),
-            child: new Text('F', style: new TextStyle(color: titleColor)),
-          ),
-          new Text(FlutterNewsStrings.of(context).title(),
-              style: new TextStyle(color: titleColor))
-        ]);
+    return new Row(children: <Widget>[
+      new Container(
+        margin: const EdgeInsets.only(right: 8.0),
+        padding: const EdgeInsets.symmetric(vertical: 2.0, horizontal: 8.0),
+        decoration: new BoxDecoration(
+            borderRadius: new BorderRadius.circular(2.0),
+            border: new Border.all(
+              width: 2.0,
+              color: titleColor,
+            )),
+        child: new Text('F', style: new TextStyle(color: titleColor)),
+      ),
+      new Text(FlutterNewsStrings.of(context).title(),
+          style: new TextStyle(color: titleColor))
+    ]);
   }
 
   Widget _buildDrawer(BuildContext context) {
@@ -106,80 +114,94 @@ class TopItemsPageState extends State<TopItemsPage> {
     );
   }
 
+  Widget _buildBody(BuildContext context) {
+    final EdgeInsets padding = const EdgeInsets.all(8.0);
+
+    return new RefreshIndicator(
+      key: _refreshIndicatorKey,
+      onRefresh: _onRefresh,
+      child: new CustomScrollView(
+        slivers: <Widget>[
+          new SliverPadding(
+            padding: padding,
+            sliver: new SliverList(
+              delegate: new SliverChildBuilderDelegate(
+                (BuildContext context, int index) {
+                  final int storyId = _itemIds[index];
+                  return new TopItemTile(
+                    storyId,
+                  );
+                },
+                childCount: _itemIds.length,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    final List<TopItemTile> itemTiles = _items.map((HnItem s) {
-      return new TopItemTile(s, onTap: () => _onTapItem(s));
-    }).toList();
-
     return new Scaffold(
-        appBar: new AppBar(
-          title: _buildAppTitle(context),
-          elevation:
-              Theme.of(context).platform == TargetPlatform.iOS ? 0.0 : 4.0,
-        ),
-        drawer: _buildDrawer(context),
-        bottomNavigationBar: new BottomNavigationBar(
-          items: <BottomNavigationBarItem>[
-            _buildNavItem(Icons.whatshot, 'Top'),
-            _buildNavItem(Icons.new_releases, 'New'),
-            _buildNavItem(Icons.view_compact, 'Show'),
-            _buildNavItem(Icons.question_answer, 'Ask'),
-            _buildNavItem(Icons.work, 'Jobs'),
-          ],
-          currentIndex: _selectedNavIndex,
-          onTap: _handleNavChange,
-        ),
-        body: new RefreshIndicator(
-            child: new ListView(
-              children: itemTiles,
-            ),
-            onRefresh: _onRefresh));
+      key: _scaffoldKey,
+      appBar: new AppBar(
+        title: _buildAppTitle(context),
+        elevation: Theme.of(context).platform == TargetPlatform.iOS ? 0.0 : 4.0,
+      ),
+      drawer: _buildDrawer(context),
+      bottomNavigationBar: new BottomNavigationBar(
+        items: <BottomNavigationBarItem>[
+          _buildNavItem(Icons.whatshot, 'Top'),
+          _buildNavItem(Icons.new_releases, 'New'),
+          _buildNavItem(Icons.view_compact, 'Show'),
+          _buildNavItem(Icons.question_answer, 'Ask'),
+          _buildNavItem(Icons.work, 'Jobs'),
+        ],
+        currentIndex: _selectedNavIndex,
+        onTap: _handleNavChange,
+      ),
+      body: _buildBody(context),
+    );
   }
 
   Future<Null> _onRefresh({int navIndex}) async {
     navIndex ??= _selectedNavIndex;
     final NavTypes navType = NavTypes.values[navIndex];
-    List<HnItem> items = <HnItem>[];
+    List<int> items = <int>[];
 
     setState(() {
-      _items = items;
+      _itemIds = items;
       _selectedNavIndex = navIndex;
     });
 
     switch (navType) {
       case NavTypes.topStories:
-        items = await getTopStories();
+        items = await HnApi.getTopStoryIds();
         break;
       case NavTypes.newStories:
-        items = await getNewStories();
+        items = await HnApi.getNewStoryIds();
         break;
       case NavTypes.showStories:
-        items = await getShowStories();
+        items = await HnApi.getShowStoryIds();
         break;
       case NavTypes.askStories:
-        items = await getAskStories();
+        items = await HnApi.getAskStoryIds();
         break;
       case NavTypes.jobStories:
-        items = await getJobStories();
+        items = await HnApi.getJobStoryIds();
         break;
     }
 
     setState(() {
-      _items = items;
+      _itemIds = items;
     });
-  }
-
-  void _onTapItem(HnItem story) {
-    final MaterialPageRoute<Null> page = new MaterialPageRoute<Null>(
-      settings: new RouteSettings(name: '${story.title}'),
-      builder: (_) => new ItemPage(story),
-    );
-    Navigator.of(context).push(page);
   }
 
   Future<Null> _handleNavChange(int value) async {
     if (value == _selectedNavIndex) return;
+
+    _refreshIndicatorKey.currentState.show();
 
     _onRefresh(navIndex: value);
   }

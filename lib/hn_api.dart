@@ -4,91 +4,131 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/services.dart';
-import 'package:flutter_news/item_model.dart';
+import 'package:flutter_news/utils.dart';
 import 'package:http/http.dart';
+import 'package:timeago/timeago.dart';
 
-const bool debugMode = false;
+const bool _debugMode = false;
 
-const String baseUrl = debugMode
+const String _baseUrl = _debugMode
     ? 'http://localhost:3000'
     : 'https://hacker-news.firebaseio.com/v0';
-const String topStoriesUrl = '$baseUrl/topstories.json';
-const String newStoriesUrl = '$baseUrl/newstories.json';
-const String showStoriesUrl = '$baseUrl/showstories.json';
-const String jobStoriesUrl = '$baseUrl/jobstories.json';
-const String askStoriesUrl = '$baseUrl/askstories.json';
-const String itemUrl = '$baseUrl/item';
+const String _topStoriesUrl = '$_baseUrl/topstories.json';
+const String _newStoriesUrl = '$_baseUrl/newstories.json';
+//const String _bestStoriesUrl = '$_baseUrl/beststories.json';
+const String _showStoriesUrl = '$_baseUrl/showstories.json';
+const String _jobStoriesUrl = '$_baseUrl/jobstories.json';
+const String _askStoriesUrl = '$_baseUrl/askstories.json';
 
 const JsonCodec jsonCodec = const JsonCodec();
 
-Future<List<HnItem>> getTopStories() async {
-  final Client httpClient = createHttpClient();
-  final Response response = await httpClient.get(topStoriesUrl);
+class HnApi {
+  HnApi();
 
-  final List<int> topStories = jsonCodec.decode(response.body);
+  static Future<List<int>> _getStoryIds(String storiesUrl) async {
+    assert(storiesUrl != null);
 
-  final Iterable<Future<HnItem>> futures =
-      topStories.take(10).map((int s) => getItem(s));
-  return Future.wait(futures);
+    final Client httpClient = createHttpClient();
+    final Response response = await httpClient.get(storiesUrl);
+
+    final List<int> listStories = jsonCodec.decode(response.body);
+
+    return listStories;
+  }
+
+  static Future<List<int>> getTopStoryIds() => _getStoryIds(_topStoriesUrl);
+
+  static Future<List<int>> getNewStoryIds() => _getStoryIds(_newStoriesUrl);
+
+  static Future<List<int>> getShowStoryIds() => _getStoryIds(_showStoriesUrl);
+
+  static Future<List<int>> getAskStoryIds() => _getStoryIds(_askStoriesUrl);
+
+  static Future<List<int>> getJobStoryIds() => _getStoryIds(_jobStoriesUrl);
+
+  static Future<List<HnItem>> getComments(List<int> ids) async {
+    final Iterable<Future<HnItem>> futures = ids.take(5).map((int id) {
+      return new HnItem(id).fetch();
+    });
+    return Future.wait(futures);
+  }
 }
 
-Future<List<HnItem>> getNewStories() async {
-  final Client httpClient = createHttpClient();
-  final Response response = await httpClient.get(newStoriesUrl);
+class HnItem {
+  static const String _itemUrl = '$_baseUrl/item';
 
-  final List<int> topStories = jsonCodec.decode(response.body);
+  static final Map<int, HnItem> _cache = <int, HnItem>{};
 
-  final Iterable<Future<HnItem>> futures =
-      topStories.take(10).map((int s) => getItem(s));
-  return Future.wait(futures);
-}
+  final TimeAgo fuzzyTime = new TimeAgo();
 
-Future<List<HnItem>> getShowStories() async {
-  final Client httpClient = createHttpClient();
-  final Response response = await httpClient.get(showStoriesUrl);
+  int id;
+  bool cached;
+  String title;
+  String text;
+  String type;
+  bool deleted;
+  int time;
+  String url;
+  String user;
+  int score;
+  int commentsCount;
+  List<int> kids;
+  String timeAgo;
 
-  final List<int> topStories = jsonCodec.decode(response.body);
+  factory HnItem(int itemId) {
+    assert(itemId != null);
 
-  final Iterable<Future<HnItem>> futures =
-      topStories.take(10).map((int s) => getItem(s));
-  return Future.wait(futures);
-}
+    if (_cache.containsKey(itemId)) {
+      return _cache[itemId];
+    } else {
+      final HnItem hnItem = new HnItem._internal(itemId);
+      _cache[itemId] = hnItem;
+      return hnItem;
+    }
+  }
 
-Future<List<HnItem>> getAskStories() async {
-  final Client httpClient = createHttpClient();
-  final Response response = await httpClient.get(askStoriesUrl);
+  HnItem._internal(int itemId)
+      : id = itemId,
+        cached = false,
+        title = "",
+        text = "",
+        type = "",
+        deleted = false,
+        time = 0,
+        url = "",
+        user = "",
+        score = 0,
+        commentsCount = 0,
+        kids = <int>[],
+        timeAgo = "";
 
-  final List<int> topStories = jsonCodec.decode(response.body);
+  // Fetch item data and update current instance
+  Future<HnItem> fetch() async {
+    final String fetchUrl = _debugMode ? '$_itemUrl/$id' : '$_itemUrl/$id.json';
+    final Client httpClient = createHttpClient();
+    final Response response = await httpClient.get(fetchUrl);
 
-  final Iterable<Future<HnItem>> futures =
-      topStories.take(10).map((int s) => getItem(s));
-  return Future.wait(futures);
-}
+    final Map<String, dynamic> item = jsonCodec.decode(response.body);
 
-Future<List<HnItem>> getJobStories() async {
-  final Client httpClient = createHttpClient();
-  final Response response = await httpClient.get(jobStoriesUrl);
+    cached = true;
+    title = item['title'] ?? '';
+    user = item['by'] ?? '';
+    kids = item['kids'] ?? <int>[];
+    score = item['score'] ?? 0;
+    url = item['url'] ?? '';
+    text = formatText(item['text'] ?? '');
+    commentsCount = item['descendants'] ?? 0;
+    type = item['type'] ?? 'story';
+    deleted = item['deleted'] ?? false;
+    time = item['time'] ?? new DateTime.now().millisecondsSinceEpoch / 1000;
+    timeAgo =
+        fuzzyTime.format(new DateTime.fromMillisecondsSinceEpoch(time * 1000));
 
-  final List<int> topStories = jsonCodec.decode(response.body);
+    _cache[item['id']] = this;
 
-  final Iterable<Future<HnItem>> futures =
-      topStories.take(10).map((int s) => getItem(s));
-  return Future.wait(futures);
-}
+    return this;
+  }
 
-Future<List<HnItem>> getComments(List<int> ids) async {
-  final Iterable<Future<HnItem>> futures =
-      ids.take(5).map((int s) => getItem(s));
-  return Future.wait(futures);
-}
-
-Future<HnItem> getItem(int id) async {
-  final Client httpClient = createHttpClient();
-
-  final String url = debugMode ? '$itemUrl/$id' : '$itemUrl/$id.json';
-  final Response response = await httpClient.get(url);
-
-  final Map<String, dynamic> story = jsonCodec.decode(response.body);
-
-  return new HnItem.fromJson(story);
+  @override
+  String toString() => '{id: $id, title: $title}';
 }

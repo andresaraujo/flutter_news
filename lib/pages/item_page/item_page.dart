@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_news/pages/item_page/title_section_tile.dart';
-import 'package:flutter_news/item_model.dart';
 import 'package:flutter_news/hn_api.dart';
 import 'package:flutter_news/utils.dart';
 
@@ -21,7 +20,7 @@ class _StoryPageState extends State<ItemPage> {
   @override
   void initState() {
     super.initState();
-    getComments(widget.item.kids).then((List<HnItem> items) {
+    HnApi.getComments(widget.item.kids).then((List<HnItem> items) {
       setState(() {
         _comments = items;
       });
