@@ -12,3 +12,11 @@ dependencies:
 
 flutter:
   uses-material-design: true
+  assets:
+    - assets/mock_data/askstories.json
+    - assets/mock_data/beststories.json
+    - assets/mock_data/jobstories.json
+    - assets/mock_data/newstories.json
+    - assets/mock_data/showstories.json
+    - assets/mock_data/topstories.json
+    - assets/mock_data/14411126.json

@@ -1,9 +1,9 @@
 import 'package:flutter_news/model/hn_item.dart';
 import 'package:flutter_news/model/hn_item_live.dart';
 import 'package:flutter_news/model/hn_item_mock.dart';
-import 'package:flutter_news/model/hn_story.dart';
-import 'package:flutter_news/model/hn_story_live.dart';
-import 'package:flutter_news/model/hn_story_mock.dart';
+import 'package:flutter_news/model/hn_stories.dart';
+import 'package:flutter_news/model/hn_stories_live.dart';
+import 'package:flutter_news/model/hn_stories_mock.dart';
 
 enum Environment { mock, production }
 
@@ -21,10 +21,10 @@ class Injector {
     _environment = environment;
   }
 
-  HnStoryRepository get hnStoryRepository {
+  HnStoriesRepository get hnStoriesRepository {
     switch (_environment) {
       case (Environment.mock):
-        return new MockHnStoryRepository();
+        return new MockHnStoriesRepository();
       case (Environment.production):
       default:
         return new LiveHnStoryRepository();

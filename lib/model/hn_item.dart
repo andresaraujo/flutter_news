@@ -41,6 +41,35 @@ class HnItem {
         type = map['type'] ?? 'story',
         deleted = map['deleted'] ?? false,
         time = map['time'] ?? new DateTime.now().millisecondsSinceEpoch / 1000;
+
+  // Creates a copy of this object but with the given fields replaced with the new values.
+  HnItem copyWith({
+    int itemId,
+    String title,
+    String text,
+    String type,
+    bool deleted,
+    int time,
+    String url,
+    String user,
+    int score,
+    int commentsCount,
+    List<int> kids,
+  }) {
+    return new HnItem(
+      itemId: itemId ?? this.itemId,
+      title: title ?? this.title,
+      text: text ?? this.text,
+      type: type ?? this.type,
+      deleted: deleted ?? this.deleted,
+      time: time ?? this.time,
+      url: url ?? this.url,
+      user: user ?? this.user,
+      score: score ?? this.score,
+      commentsCount: commentsCount ?? this.commentsCount,
+      kids: kids ?? this.kids,
+    );
+  }
 }
 
 abstract class HnItemRepository {

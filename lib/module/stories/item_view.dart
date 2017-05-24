@@ -1,10 +1,11 @@
+import 'package:flutter_news/pages/item_page/item_page.dart';
 import 'package:timeago/timeago.dart';
 
 import 'package:flutter/material.dart';
 
 import 'package:flutter_news/utils.dart';
 import 'package:flutter_news/model/hn_item.dart';
-import 'package:flutter_news/module/stories/item/item_presenter.dart';
+import 'package:flutter_news/module/stories/item_presenter.dart';
 
 class ItemTile extends StatefulWidget {
   final int itemId;
@@ -16,18 +17,36 @@ class ItemTile extends StatefulWidget {
 }
 
 class ItemTileState extends State<ItemTile> implements ItemViewContract {
-  HnItem _item;
 
+  HnItem _item;
   ItemPresenter _presenter;
 
   ItemTileState() {
     _presenter = new ItemPresenter(this);
+    _item = new HnItem(
+        itemId: 0,
+        title: "Loading...",
+        text: "",
+        type: "story",
+        deleted: false,
+        time: 0,
+        url: "",
+        user: "",
+        score: 0,
+        commentsCount: 0,
+        kids: <int>[]
+    );
   }
 
   @override
   void initState() {
     super.initState();
 
+    _presenter.loadItem(widget.itemId);
+  }
+
+  @override
+  void didUpdateWidget(ItemTile tile) {
     _presenter.loadItem(widget.itemId);
   }
 
@@ -42,13 +61,17 @@ class ItemTileState extends State<ItemTile> implements ItemViewContract {
 
   @override
   void onLoadItemError() {
-    // TODO: implement onLoadItemError
+    if (mounted) {
+      setState(() {
+        _item = _item.copyWith(title: "Error loading");
+      });
+    }
   }
 
   void _onTapItem(HnItem item) {
     /*
     final MaterialPageRoute<Null> page = new MaterialPageRoute<Null>(
-      settings: new RouteSettings(name: '${item.title}'),
+      settings: new RouteSettings(name: '${widget.itemId}'),
       builder: (_) => new ItemPage(item),
     );
     Navigator.of(context).push(page);
@@ -93,7 +116,7 @@ class ItemTileState extends State<ItemTile> implements ItemViewContract {
 
     return new RichText(
       text: new TextSpan(
-        text: _item.title.length > 0 ? '${_item.title} ' : "Loading...",
+        text: '${_item.title}',
         style: textTheme.body2,
         children: children,
       ),
@@ -120,7 +143,7 @@ class ItemTileState extends State<ItemTile> implements ItemViewContract {
           _buildTop(textTheme),
           _item.user.length > 0
               ? _buildText('by ${_item.user} | $timeAgo', textTheme)
-              : _buildText('id ' + widget.itemId.toString(), textTheme),
+              : _buildText('id ${widget.itemId}', textTheme),
         ]);
 
     return new InkWell(

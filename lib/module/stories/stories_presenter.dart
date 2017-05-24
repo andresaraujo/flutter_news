@@ -1,27 +1,27 @@
 import 'dart:async';
 
 import 'package:flutter_news/injection/dependency_injection.dart';
-import 'package:flutter_news/model/hn_story.dart';
+import 'package:flutter_news/model/hn_stories.dart';
 
 abstract class StoriesListViewContract {
-  void onLoadStoriesComplete(List<HnStory> items);
+  void onLoadStoriesComplete(HnStories items);
   void onLoadStoriesError();
 }
 
 class StoriesListPresenter {
   StoriesListViewContract _view;
-  HnStoryRepository _repository;
+  HnStoriesRepository _repository;
 
-  static final Map<String, List<HnStory>> _cache = <String, List<HnStory>>{};
+  static final Map<String, HnStories> _cache = <String, HnStories>{};
 
   StoriesListPresenter(this._view) {
-    _repository = new Injector().hnStoryRepository;
+    _repository = new Injector().hnStoriesRepository;
   }
 
   Future<Null> loadStories(StoryType storyType) async {
     assert(_view != null);
 
-    List<HnStory> stories;
+    HnStories stories;
     final String _storyTypeString = storyType.toString();
 
     try {

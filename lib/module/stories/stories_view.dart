@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_news/fnews_configuration.dart';
 import 'package:flutter_news/fnews_strings.dart';
-import 'package:flutter_news/model/hn_story.dart';
+import 'package:flutter_news/model/hn_stories.dart';
 
-import 'package:flutter_news/module/stories/item/item_view.dart';
+import 'package:flutter_news/module/stories/item_view.dart';
 import 'stories_presenter.dart';
 
 enum NavTypes { topStories, newStories, showStories, askStories, jobStories }
@@ -26,14 +26,18 @@ class HnStoriesPageState extends State<HnStoriesPage>
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
       new GlobalKey<RefreshIndicatorState>();
 
-  List<HnStory> _items = <HnStory>[];
-  int _itemCount = 0;
-  int _selectedNavIndex = 0;
-
   StoriesListPresenter _presenter;
+
+  HnStories _stories;
+  int _storyCount;
+  int _selectedNavIndex;
 
   HnStoriesPageState() {
     _presenter = new StoriesListPresenter(this);
+
+    _stories = new HnStories(storyList: <int>[]);
+    _storyCount = 0;
+    _selectedNavIndex = 0;
   }
 
   @override
@@ -49,11 +53,11 @@ class HnStoriesPageState extends State<HnStoriesPage>
   }
 
   @override
-  void onLoadStoriesComplete(List<HnStory> items) {
+  void onLoadStoriesComplete(HnStories stories) {
     if (mounted) {
       setState(() {
-        _items = items;
-        _itemCount = items.length;
+        _stories = stories;
+        _storyCount = stories.storyList.length;
       });
     }
   }
@@ -146,10 +150,10 @@ class HnStoriesPageState extends State<HnStoriesPage>
             sliver: new SliverList(
               delegate: new SliverChildBuilderDelegate(
                 (BuildContext context, int index) {
-                  final int storyId = _items[index].storyId;
+                  final int storyId = _stories.storyList[index];
                   return new ItemTile(storyId);
                 },
-                childCount: _itemCount,
+                childCount: _storyCount,
               ),
             ),
           ),
@@ -183,11 +187,11 @@ class HnStoriesPageState extends State<HnStoriesPage>
   }
 
   Future<Null> _onRefresh() async {
-    print("onRefresh");
     final NavTypes selectedNav = NavTypes.values[_selectedNavIndex];
 
     setState(() {
-      _items = <HnStory>[];
+      _stories = new HnStories(storyList: <int>[]);
+      _storyCount = 0;
     });
 
     switch (selectedNav) {
@@ -213,6 +217,7 @@ class HnStoriesPageState extends State<HnStoriesPage>
   }
 
   void _handleNavChange(int value) {
+    print("nav Change $value");
     if (value == _selectedNavIndex) {
       return;
     }

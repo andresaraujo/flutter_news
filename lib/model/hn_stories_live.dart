@@ -4,9 +4,11 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 import 'package:flutter_news/model/fetch_exception.dart';
-import 'hn_story.dart';
+import 'package:flutter_news/model/hn_stories.dart';
 
-class LiveHnStoryRepository implements HnStoryRepository {
+const JsonCodec jsonCodec = const JsonCodec();
+
+class LiveHnStoryRepository implements HnStoriesRepository {
   static const String _baseUrl = 'https://hacker-news.firebaseio.com/v0';
   static const String _topStoriesUrl = '$_baseUrl/topstories.json';
   static const String _newStoriesUrl = '$_baseUrl/newstories.json';
@@ -15,10 +17,8 @@ class LiveHnStoryRepository implements HnStoryRepository {
   static const String _jobStoriesUrl = '$_baseUrl/jobstories.json';
   static const String _askStoriesUrl = '$_baseUrl/askstories.json';
 
-  final JsonDecoder _decoder = new JsonDecoder();
-
   @override
-  Future<List<HnStory>> fetch(StoryType storyType) async {
+  Future<HnStories> fetch(StoryType storyType) async {
     String _fetchUrl;
 
     switch (storyType) {
@@ -51,9 +51,8 @@ class LiveHnStoryRepository implements HnStoryRepository {
           "Error while getting stories [StatusCode:$statusCode]");
     }
 
-    final dynamic storiesContainer = _decoder.convert(response.body);
-    final List<int> listStories = storiesContainer['results'];
+    final List<int> storiesList = jsonCodec.decode(response.body);
 
-    return listStories.map((int id) => new HnStory(storyId: id)).toList();
+    return new HnStories.fromList(storiesList);
   }
 }
