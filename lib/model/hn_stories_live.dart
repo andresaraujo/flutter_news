@@ -8,7 +8,7 @@ import 'package:flutter_news/model/hn_stories.dart';
 
 const JsonCodec jsonCodec = const JsonCodec();
 
-class LiveHnStoryRepository implements HnStoriesRepository {
+class LiveHnStoryRepository extends HnStoriesRepository {
   static const String _baseUrl = 'https://hacker-news.firebaseio.com/v0';
   static const String _topStoriesUrl = '$_baseUrl/topstories.json';
   static const String _newStoriesUrl = '$_baseUrl/newstories.json';
@@ -53,6 +53,6 @@ class LiveHnStoryRepository implements HnStoriesRepository {
 
     final List<int> storiesList = jsonCodec.decode(response.body);
 
-    return new HnStories.fromList(storiesList);
+    return new HnStories.fromList(storyType, storiesList);
   }
 }

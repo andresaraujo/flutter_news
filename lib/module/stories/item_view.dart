@@ -1,4 +1,3 @@
-import 'package:flutter_news/pages/item_page/item_page.dart';
 import 'package:timeago/timeago.dart';
 
 import 'package:flutter/material.dart';
@@ -6,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_news/utils.dart';
 import 'package:flutter_news/model/hn_item.dart';
 import 'package:flutter_news/module/stories/item_presenter.dart';
+import 'package:flutter_news/module/comments/comments_view.dart';
 
 class ItemTile extends StatefulWidget {
   final int itemId;
@@ -17,7 +17,6 @@ class ItemTile extends StatefulWidget {
 }
 
 class ItemTileState extends State<ItemTile> implements ItemViewContract {
-
   HnItem _item;
   ItemPresenter _presenter;
 
@@ -34,8 +33,7 @@ class ItemTileState extends State<ItemTile> implements ItemViewContract {
         user: "",
         score: 0,
         commentsCount: 0,
-        kids: <int>[]
-    );
+        kids: <int>[]);
   }
 
   @override
@@ -48,6 +46,7 @@ class ItemTileState extends State<ItemTile> implements ItemViewContract {
   @override
   void didUpdateWidget(ItemTile tile) {
     _presenter.loadItem(widget.itemId);
+    super.didUpdateWidget(tile);
   }
 
   @override
@@ -69,13 +68,11 @@ class ItemTileState extends State<ItemTile> implements ItemViewContract {
   }
 
   void _onTapItem(HnItem item) {
-    /*
     final MaterialPageRoute<Null> page = new MaterialPageRoute<Null>(
       settings: new RouteSettings(name: '${widget.itemId}'),
-      builder: (_) => new ItemPage(item),
+      builder: (_) => new CommentsPage(item),
     );
     Navigator.of(context).push(page);
-    */
   }
 
   Widget _buildBadge(int count, Color backgroundColor, TextTheme textTheme) {
@@ -130,7 +127,8 @@ class ItemTileState extends State<ItemTile> implements ItemViewContract {
     final TextTheme textTheme = theme.textTheme;
 
     final TimeAgo fuzzyTime = new TimeAgo();
-    final String timeAgo = fuzzyTime.format(new DateTime.fromMillisecondsSinceEpoch(_item.time * 1000));
+    final String timeAgo = fuzzyTime
+        .format(new DateTime.fromMillisecondsSinceEpoch(_item.time * 1000));
 
     final List<Widget> badgeChildren = <Widget>[
       _buildBadge(_item.score, Colors.orange, textTheme),

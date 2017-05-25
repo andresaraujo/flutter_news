@@ -7,7 +7,7 @@ import 'package:flutter_news/model/hn_stories.dart';
 
 const JsonCodec jsonCodec = const JsonCodec();
 
-class MockHnStoriesRepository implements HnStoriesRepository {
+class MockHnStoriesRepository extends HnStoriesRepository {
   @override
   Future<HnStories> fetch(StoryType storyType) async {
     String _mockFileName;
@@ -39,6 +39,6 @@ class MockHnStoriesRepository implements HnStoriesRepository {
 
     final List<int> storiesList = jsonCodec.decode(mockData);
 
-    return new HnStories.fromList(storiesList);
+    return new HnStories.fromList(storyType, storiesList);
   }
 }

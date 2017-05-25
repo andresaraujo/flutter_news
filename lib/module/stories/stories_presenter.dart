@@ -12,25 +12,18 @@ class StoriesListPresenter {
   StoriesListViewContract _view;
   HnStoriesRepository _repository;
 
-  static final Map<String, HnStories> _cache = <String, HnStories>{};
-
   StoriesListPresenter(this._view) {
     _repository = new Injector().hnStoriesRepository;
   }
 
-  Future<Null> loadStories(StoryType storyType) async {
+  Future<Null> loadStories(StoryType storyType,
+      [bool forceReload = false]) async {
     assert(_view != null);
 
     HnStories stories;
-    final String _storyTypeString = storyType.toString();
 
     try {
-      if (_cache.containsKey(_storyTypeString)) {
-        stories = _cache[_storyTypeString];
-      } else {
-        stories = await _repository.fetch(storyType);
-        _cache[_storyTypeString] = stories;
-      }
+      stories = await _repository.load(storyType, forceReload);
       _view.onLoadStoriesComplete(stories);
     } catch (error) {
       print(error);

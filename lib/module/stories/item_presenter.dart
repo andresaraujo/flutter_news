@@ -12,26 +12,17 @@ class ItemPresenter {
   ItemViewContract _view;
   HnItemRepository _repository;
 
-  static final Map<int, HnItem> _cache = <int, HnItem>{};
-
   ItemPresenter(this._view) {
     _repository = new Injector().hnItemRepository;
   }
 
-  Future<Null> loadItem(int itemId) async {
+  Future<Null> loadItem(int itemId, [bool forceReload = false]) async {
     assert(_view != null);
 
     HnItem item;
 
     try {
-      if (_cache.containsKey(itemId)) {
-        item = _cache[itemId];
-        print("from cache $itemId");
-      } else {
-        print("loading $itemId");
-        item = await _repository.fetch(itemId);
-        _cache[itemId] = item;
-      }
+      item = await _repository.load(itemId, forceReload);
       _view.onLoadItemComplete(item);
     } catch (error) {
       print(error);

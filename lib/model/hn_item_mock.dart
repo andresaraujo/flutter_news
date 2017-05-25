@@ -7,7 +7,7 @@ import 'package:flutter_news/model/hn_item.dart';
 
 const JsonCodec jsonCodec = const JsonCodec();
 
-class MockHnItemRepository implements HnItemRepository {
+class MockHnItemRepository extends HnItemRepository {
   @override
   Future<HnItem> fetch(int itemId) async {
     final String mockData =

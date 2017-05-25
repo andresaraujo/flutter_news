@@ -8,10 +8,10 @@ import 'package:flutter_news/fnews_strings.dart';
 import 'package:flutter_news/i18n/fnews_messages_all.dart';
 import 'package:flutter_news/injection/dependency_injection.dart';
 import 'package:flutter_news/module/stories/stories_view.dart';
-import 'package:flutter_news/pages/top_items_page/top_items_page.dart';
 
 void main() {
-  Injector.configure(Environment.mock);
+  // Injector for selecting data source: Environment.production or Environment.mock
+  Injector.configure(Environment.production);
   runApp(new FlutterNewsApp());
 }
 

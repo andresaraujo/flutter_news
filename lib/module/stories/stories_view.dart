@@ -31,13 +31,17 @@ class HnStoriesPageState extends State<HnStoriesPage>
   HnStories _stories;
   int _storyCount;
   int _selectedNavIndex;
+  bool _forceReloadOnRefresh;
 
   HnStoriesPageState() {
     _presenter = new StoriesListPresenter(this);
 
-    _stories = new HnStories(storyList: <int>[]);
+    _stories = new HnStories(storyType: StoryType.top, storyList: <int>[]);
     _storyCount = 0;
     _selectedNavIndex = 0;
+
+    // If not refreshed by navChange, ignore story cache
+    _forceReloadOnRefresh = true;
   }
 
   @override
@@ -190,39 +194,42 @@ class HnStoriesPageState extends State<HnStoriesPage>
     final NavTypes selectedNav = NavTypes.values[_selectedNavIndex];
 
     setState(() {
-      _stories = new HnStories(storyList: <int>[]);
+      _stories = new HnStories(storyType: StoryType.top, storyList: <int>[]);
       _storyCount = 0;
     });
 
     switch (selectedNav) {
       case NavTypes.newStories:
-        _presenter.loadStories(StoryType.newest);
+        _presenter.loadStories(StoryType.newest, _forceReloadOnRefresh);
         break;
       case NavTypes.showStories:
-        _presenter.loadStories(StoryType.show);
+        _presenter.loadStories(StoryType.show, _forceReloadOnRefresh);
         break;
       case NavTypes.askStories:
-        _presenter.loadStories(StoryType.ask);
+        _presenter.loadStories(StoryType.ask, _forceReloadOnRefresh);
         break;
       case NavTypes.jobStories:
-        _presenter.loadStories(StoryType.job);
+        _presenter.loadStories(StoryType.job, _forceReloadOnRefresh);
         break;
       case NavTypes.topStories:
       default:
-        _presenter.loadStories(StoryType.top);
+        _presenter.loadStories(StoryType.top, _forceReloadOnRefresh);
         break;
     }
+
+    // Unless refreshed by navChange, always ignore story cache
+    _forceReloadOnRefresh = true;
 
     // onLoadStoriesComplete calls setState afterwards
   }
 
   void _handleNavChange(int value) {
-    print("nav Change $value");
     if (value == _selectedNavIndex) {
       return;
     }
 
     _selectedNavIndex = value;
+    _forceReloadOnRefresh = false;
 
     // This will show refresh indicator and call onRefresh()
     _refreshIndicatorKey.currentState.show();

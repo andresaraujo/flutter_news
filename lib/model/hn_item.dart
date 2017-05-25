@@ -73,5 +73,19 @@ class HnItem {
 }
 
 abstract class HnItemRepository {
+  static Map<int, HnItem> _cache = new Map<int, HnItem>();
+
+  // Abstract method to be overriden by concrete implementation
   Future<HnItem> fetch(int itemId);
+
+  Future<HnItem> load(int itemId, [bool forceReload = false]) async {
+    if (_cache.containsKey(itemId) && !forceReload) {
+      return _cache[itemId];
+    } else {
+      final HnItem item = await fetch(itemId);
+      _cache[itemId] = item;
+      return item;
+    }
+  }
+
 }

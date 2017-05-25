@@ -6,7 +6,7 @@ import 'package:http/http.dart' as http;
 import 'package:flutter_news/model/fetch_exception.dart';
 import 'package:flutter_news/model/hn_item.dart';
 
-class LiveHnItemRepository implements HnItemRepository {
+class LiveHnItemRepository extends HnItemRepository {
   static const String _baseUrl = 'https://hacker-news.firebaseio.com/v0';
   static const String _itemUrl = '$_baseUrl/item';
 
