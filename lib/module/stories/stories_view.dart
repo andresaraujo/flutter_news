@@ -3,45 +3,72 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_news/fnews_configuration.dart';
 import 'package:flutter_news/fnews_strings.dart';
-import 'package:flutter_news/pages/top_items_page/top_item_tile.dart';
-import 'package:flutter_news/hn_api.dart';
+import 'package:flutter_news/model/hn_stories.dart';
+
+import 'package:flutter_news/module/stories/item_view.dart';
+import 'stories_presenter.dart';
 
 enum NavTypes { topStories, newStories, showStories, askStories, jobStories }
 
-class TopItemsPage extends StatefulWidget {
-  const TopItemsPage(this.configuration, this.updater);
+class HnStoriesPage extends StatefulWidget {
+  const HnStoriesPage(this.configuration, this.updater);
 
   final FlutterNewsConfiguration configuration;
   final ValueChanged<FlutterNewsConfiguration> updater;
 
   @override
-  TopItemsPageState createState() => new TopItemsPageState();
+  HnStoriesPageState createState() => new HnStoriesPageState();
 }
 
-class TopItemsPageState extends State<TopItemsPage> {
+class HnStoriesPageState extends State<HnStoriesPage>
+    implements StoriesListViewContract {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
       new GlobalKey<RefreshIndicatorState>();
 
-  List<int> _itemIds = <int>[];
-  int _selectedNavIndex = 0;
+  StoriesListPresenter _presenter;
+
+  HnStories _stories;
+  int _storyCount;
+  int _selectedNavIndex;
+  bool _forceReloadOnRefresh;
+
+  HnStoriesPageState() {
+    _presenter = new StoriesListPresenter(this);
+
+    _stories = new HnStories(storyType: StoryType.top, storyList: <int>[]);
+    _storyCount = 0;
+    _selectedNavIndex = 0;
+
+    // If not refreshed by navChange, ignore story cache
+    _forceReloadOnRefresh = true;
+  }
 
   @override
   void initState() {
     super.initState();
 
     // Show RefreshIndicator
+    // This will call onRefresh() method and load stories
     final Future<Null> load = new Future<Null>.value(null);
     load.then((_) {
       _refreshIndicatorKey.currentState.show();
     });
+  }
 
-    // Load Top stories
-    HnApi.getTopStoryIds().then((List<int> storyIds) {
+  @override
+  void onLoadStoriesComplete(HnStories stories) {
+    if (mounted) {
       setState(() {
-        _itemIds = storyIds;
+        _stories = stories;
+        _storyCount = stories.storyList.length;
       });
-    });
+    }
+  }
+
+  @override
+  void onLoadStoriesError() {
+    // TODO: implement onLoadStoriesError
   }
 
   void _handleThemeChange(ThemeName themeName) {
@@ -127,12 +154,10 @@ class TopItemsPageState extends State<TopItemsPage> {
             sliver: new SliverList(
               delegate: new SliverChildBuilderDelegate(
                 (BuildContext context, int index) {
-                  final int storyId = _itemIds[index];
-                  return new TopItemTile(
-                    storyId,
-                  );
+                  final int storyId = _stories.storyList[index];
+                  return new ItemTile(storyId);
                 },
-                childCount: _itemIds.length,
+                childCount: _storyCount,
               ),
             ),
           ),
@@ -165,44 +190,48 @@ class TopItemsPageState extends State<TopItemsPage> {
     );
   }
 
-  Future<Null> _onRefresh({int navIndex}) async {
-    navIndex ??= _selectedNavIndex;
-    final NavTypes navType = NavTypes.values[navIndex];
-    List<int> items = <int>[];
+  Future<Null> _onRefresh() async {
+    final NavTypes selectedNav = NavTypes.values[_selectedNavIndex];
 
     setState(() {
-      _itemIds = items;
-      _selectedNavIndex = navIndex;
+      _stories = new HnStories(storyType: StoryType.top, storyList: <int>[]);
+      _storyCount = 0;
     });
 
-    switch (navType) {
-      case NavTypes.topStories:
-        items = await HnApi.getTopStoryIds();
-        break;
+    switch (selectedNav) {
       case NavTypes.newStories:
-        items = await HnApi.getNewStoryIds();
+        _presenter.loadStories(StoryType.newest, _forceReloadOnRefresh);
         break;
       case NavTypes.showStories:
-        items = await HnApi.getShowStoryIds();
+        _presenter.loadStories(StoryType.show, _forceReloadOnRefresh);
         break;
       case NavTypes.askStories:
-        items = await HnApi.getAskStoryIds();
+        _presenter.loadStories(StoryType.ask, _forceReloadOnRefresh);
         break;
       case NavTypes.jobStories:
-        items = await HnApi.getJobStoryIds();
+        _presenter.loadStories(StoryType.job, _forceReloadOnRefresh);
+        break;
+      case NavTypes.topStories:
+      default:
+        _presenter.loadStories(StoryType.top, _forceReloadOnRefresh);
         break;
     }
 
-    setState(() {
-      _itemIds = items;
-    });
+    // Unless refreshed by navChange, always ignore story cache
+    _forceReloadOnRefresh = true;
+
+    // onLoadStoriesComplete calls setState afterwards
   }
 
-  Future<Null> _handleNavChange(int value) async {
-    if (value == _selectedNavIndex) return;
+  void _handleNavChange(int value) {
+    if (value == _selectedNavIndex) {
+      return;
+    }
 
+    _selectedNavIndex = value;
+    _forceReloadOnRefresh = false;
+
+    // This will show refresh indicator and call onRefresh()
     _refreshIndicatorKey.currentState.show();
-
-    _onRefresh(navIndex: value);
   }
 }
