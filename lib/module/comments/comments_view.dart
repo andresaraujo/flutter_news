@@ -1,31 +1,58 @@
-import 'package:flutter/material.dart';
+import 'package:flutter_news/module/comments/comments_presenter.dart';
+import 'package:flutter_news/module/comments/comments_title_view.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:flutter_news/pages/item_page/title_section_tile.dart';
-import 'package:flutter_news/hn_api.dart';
+
+import 'package:flutter/material.dart';
+
+import 'package:flutter_news/model/hn_item.dart';
 import 'package:flutter_news/utils.dart';
 
-class ItemPage extends StatefulWidget {
+class CommentsPage extends StatefulWidget {
   final HnItem item;
 
-  ItemPage(this.item);
+  CommentsPage(this.item);
 
   @override
-  _StoryPageState createState() => new _StoryPageState();
+  CommentsPageState createState() => new CommentsPageState();
 }
 
-class _StoryPageState extends State<ItemPage> {
+class CommentsPageState extends State<CommentsPage> implements CommentsViewContract{
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
-  List<HnItem> _comments = <HnItem>[];
+
+  CommentsPresenter _presenter;
+  List<HnItem> _comments;
+
+  CommentsPageState() {
+    _presenter = new CommentsPresenter(this);
+    _comments = <HnItem>[];
+  }
 
   @override
   void initState() {
     super.initState();
-    HnApi.getComments(widget.item.kids).then((List<HnItem> items) {
+    _presenter.getComments(widget.item.kids).then((List<HnItem> items) {
       setState(() {
         _comments = items;
       });
     });
   }
+
+  @override
+  void onLoadCommentsComplete(HnItem story) {
+    /*
+    if (mounted) {
+      setState(() {
+      });
+    }
+    */
+  }
+
+  @override
+  void onLoadCommentsError() {
+    // TODO: implement onLoadStoriesError
+  }
+
+
 
   Widget _buildReplyButton(HnItem item) {
     if (item.kids.length == 0) return null;
@@ -70,7 +97,7 @@ class _StoryPageState extends State<ItemPage> {
     });
 
     final List<Widget> listItems = <Widget>[
-      new TitleSectionTile(widget.item),
+      new CommentsTitleTile(widget.item),
       new Divider()
     ];
 
@@ -111,7 +138,7 @@ class _StoryPageState extends State<ItemPage> {
   void _onShowRepliesPressed(HnItem item) {
     final MaterialPageRoute<Null> page = new MaterialPageRoute<Null>(
       settings: new RouteSettings(name: '${item.title}'),
-      builder: (_) => new ItemPage(item),
+      builder: (_) => new CommentsPage(item),
     );
     Navigator.of(context).push(page);
   }

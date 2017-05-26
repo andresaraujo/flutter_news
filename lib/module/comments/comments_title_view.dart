@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_news/hn_api.dart';
+
+import 'package:flutter_news/model/hn_item.dart';
 import 'package:flutter_news/utils.dart';
 
-class TitleSectionTile extends StatelessWidget {
+class CommentsTitleTile extends StatelessWidget {
   final HnItem item;
 
-  TitleSectionTile(this.item);
+  CommentsTitleTile(this.item);
 
   Widget _buildText(String text, TextStyle style) {
     return new Text(text, style: style);
@@ -22,10 +23,10 @@ class TitleSectionTile extends StatelessWidget {
         padding: const EdgeInsets.only(bottom: 5.0),
         child: new RichText(
             text: new TextSpan(
-          text: '$title ',
-          style: textTheme.title,
-          children: children,
-        )));
+              text: '$title ',
+              style: textTheme.title,
+              children: children,
+            )));
   }
 
   @override
@@ -36,7 +37,7 @@ class TitleSectionTile extends StatelessWidget {
 
     Widget top = _buildTop(item.title, item.url, textTheme);
     Widget bottom =
-        _buildText('${item.score} Points | by ${item.user}', captionStyle);
+    _buildText('${item.score} Points | by ${item.user}', captionStyle);
 
     if (item.type == 'comment') {
       top = new Text('${item.text}', style: textTheme.body2);
