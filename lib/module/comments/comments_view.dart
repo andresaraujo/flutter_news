@@ -1,118 +1,47 @@
-import 'package:flutter_news/module/comments/comments_presenter.dart';
 import 'package:flutter_news/module/comments/comments_title_view.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'package:flutter/material.dart';
 
+import 'package:flutter_news/fnews_configuration.dart';
+import 'package:flutter_news/module/comments/comment_view.dart';
 import 'package:flutter_news/model/hn_item.dart';
-import 'package:flutter_news/utils.dart';
 
 class CommentsPage extends StatefulWidget {
+  final FlutterNewsConfiguration configuration;
   final HnItem item;
 
-  CommentsPage(this.item);
+  const CommentsPage(this.item, this.configuration);
 
   @override
   CommentsPageState createState() => new CommentsPageState();
 }
 
-class CommentsPageState extends State<CommentsPage> implements CommentsViewContract{
+class CommentsPageState extends State<CommentsPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
-  CommentsPresenter _presenter;
-  List<HnItem> _comments;
-
-  CommentsPageState() {
-    _presenter = new CommentsPresenter(this);
-    _comments = <HnItem>[];
-  }
+  List<int> _commentIdList;
 
   @override
   void initState() {
     super.initState();
-    _presenter.getComments(widget.item.kids).then((List<HnItem> items) {
-      setState(() {
-        _comments = items;
-      });
-    });
-  }
-
-  @override
-  void onLoadCommentsComplete(HnItem story) {
-    /*
-    if (mounted) {
-      setState(() {
-      });
-    }
-    */
-  }
-
-  @override
-  void onLoadCommentsError() {
-    // TODO: implement onLoadStoriesError
-  }
-
-
-
-  Widget _buildReplyButton(HnItem item) {
-    if (item.kids.length == 0) return null;
-
-    return new ButtonTheme.bar(
-        child:
-            new ButtonBar(alignment: MainAxisAlignment.end, children: <Widget>[
-      new FlatButton(
-        child: new Text('Show Replies (${item.kids.length})'),
-        onPressed: () {
-          _onShowRepliesPressed(item);
-        },
-      ),
-    ]));
+    _commentIdList = widget.item.kids;
   }
 
   @override
   Widget build(BuildContext context) {
-    final TextTheme textTheme = Theme.of(context).textTheme;
-
-    final Iterable<Container> commentCards =
-        _comments.where((HnItem i) => !i.deleted).map((HnItem item) {
-      return new Container(
-          padding: new EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 0.0),
-          child: new Card(
-              child: new Padding(
-                  padding: new EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 16.0),
-                  child: new Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      new Text(item.user, style: textTheme.caption),
-                      new Text(
-                        item.text,
-                        softWrap: true,
-                        maxLines: 5,
-                        overflow: TextOverflow.ellipsis,
-                        style: textTheme.body1,
-                      ),
-                      _buildReplyButton(item),
-                    ].where(notNull).toList(),
-                  ))));
-    });
-
-    final List<Widget> listItems = <Widget>[
-      new CommentsTitleTile(widget.item),
-      new Divider()
-    ];
-
-    listItems.addAll(commentCards);
-
-    String title = '';
-    final List<IconButton> actions = <IconButton>[];
+    String title;
+    final List<IconButton> appBarActions = <IconButton>[];
 
     switch (widget.item.type) {
       case 'story':
-        title = '';
+        title = widget.item.title;
         if (widget.item.url.isNotEmpty) {
-          actions.add(
+          appBarActions.add(
             new IconButton(
-                icon: const Icon(Icons.open_in_browser), onPressed: _launchURL),
+              icon: const Icon(Icons.open_in_browser),
+              onPressed: _launchURL,
+            ),
           );
         }
         break;
@@ -121,26 +50,37 @@ class CommentsPageState extends State<CommentsPage> implements CommentsViewContr
         break;
     }
 
-    actions
-        .add(new IconButton(icon: const Icon(Icons.share), onPressed: _share));
+    appBarActions.add(new IconButton(
+      icon: const Icon(Icons.share),
+      onPressed: _share,
+    ));
 
     return new Scaffold(
-        key: _scaffoldKey,
-        appBar: new AppBar(
+      key: _scaffoldKey,
+      body: new CustomScrollView(slivers: <Widget>[
+        new SliverAppBar(
+          actions: appBarActions,
+          floating: true,
+          snap: true,
           title: new Text(title),
-          actions: actions,
         ),
-        body: new ListView(
-          children: listItems,
-        ));
-  }
-
-  void _onShowRepliesPressed(HnItem item) {
-    final MaterialPageRoute<Null> page = new MaterialPageRoute<Null>(
-      settings: new RouteSettings(name: '${item.title}'),
-      builder: (_) => new CommentsPage(item),
+        new SliverToBoxAdapter(
+          child: new CommentsTitleTile(widget.item),
+        ),
+        new SliverPadding(
+          padding: new EdgeInsets.fromLTRB(8.0, 8.0, 0.0, 0.0),
+          sliver: new SliverList(
+            delegate: new SliverChildBuilderDelegate(
+              (BuildContext context, int index) {
+                return new CommentTile(
+                    _commentIdList[index], widget.configuration);
+              },
+              childCount: _commentIdList.length,
+            ),
+          ),
+        ),
+      ]),
     );
-    Navigator.of(context).push(page);
   }
 
   void _launchURL() {
