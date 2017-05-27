@@ -1,0 +1,13 @@
+{
+  "by": "sp332",
+  "id": 14411458,
+  "kids": [
+    14411669,
+    14414333,
+    14411945
+  ],
+  "parent": 14411126,
+  "text": "Archive Team is making a distributed backup of the Internet Archive. <a href=\"http:&#x2F;&#x2F;archiveteam.org&#x2F;index.php?title=INTERNETARCHIVE.BAK\" rel=\"nofollow\">http:&#x2F;&#x2F;archiveteam.org&#x2F;index.php?title=INTERNETARCHIVE.BAK</a> Currently the method getting the most attention is to put the data into git-annex repos, and then have clients just download as many files as they have storage space for. But because of limitations with git, each repo can only handle about 100,000 files even if they are not &quot;hydrated&quot;. <a href=\"http:&#x2F;&#x2F;git-annex.branchable.com&#x2F;design&#x2F;iabackup&#x2F;\" rel=\"nofollow\">http:&#x2F;&#x2F;git-annex.branchable.com&#x2F;design&#x2F;iabackup&#x2F;</a> If git performance were improved for files that have not been modified, this restriction could be lifted and the manual work of dividing collections up into repos could be a lot lower.<p>Edit: If you&#x27;re interested in helping out, e.g. porting the client to Windows, stop by the IRC channel #internetarchive.bak on efnet.",
+  "time": 1495644915,
+  "type": "comment"
+}

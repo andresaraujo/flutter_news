@@ -24,6 +24,8 @@ class FlutterNewsAppState extends State<FlutterNewsApp> {
   // Default configuration
   FlutterNewsConfiguration _configuration = new FlutterNewsConfiguration(
     themeName: ThemeName.light,
+    showFullComment: false,
+    expandCommentTree: false,
   );
 
   @override
