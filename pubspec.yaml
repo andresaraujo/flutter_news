@@ -2,14 +2,17 @@ name: flutter_news
 description: A Hacker News client in flutter
 
 dependencies:
-  #flutter:
-  #  sdk: flutter
+  flutter:
+    sdk: flutter
   url_launcher: '^0.4.0'
   timeago: '^1.0.0'
   shared_preferences:
   intl: '>=0.14.0 <0.15.0'
   intl_translation: '>=0.14.0 <0.15.0'
-  html_unescape: "^0.1.4"
+  html_unescape:
+    git:
+      url: git://github.com/andresaraujo/html_unescape.git
+      ref: patch-1
 
 flutter:
   uses-material-design: true
