@@ -1,3 +1,5 @@
+import 'package:html_unescape/html_unescape.dart';
+
 import 'package:flutter/material.dart';
 
 import 'package:flutter_news/fnews_configuration.dart';
@@ -24,6 +26,8 @@ class CommentTileState extends State<CommentTile>
   HnItem _item;
   CommentPresenter _presenter;
   bool _showFullComment;
+
+  final HtmlUnescape _unescape = new HtmlUnescape();
 
   @override
   void initState() {
@@ -102,11 +106,13 @@ class CommentTileState extends State<CommentTile>
   Widget build(BuildContext context) {
     final TextTheme textTheme = Theme.of(context).textTheme;
 
+    final String itemText = _unescape.convert(_item.text);
+
     return new Card(
       child: new InkWell(
         onTap: _onTapItem,
         child: new Padding(
-          padding: new EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 8.0),
+          padding: new EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 16.0),
           child: new Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
@@ -118,14 +124,14 @@ class CommentTileState extends State<CommentTile>
               // Comment text
               (_showFullComment)
                   ? new Text(
-                      _item.text,
+                      itemText,
                       softWrap: true,
                       overflow: TextOverflow.ellipsis,
                       maxLines: maxLinesFullComment,
                       style: textTheme.body1,
                     )
                   : new Text(
-                      _item.text,
+                      itemText,
                       softWrap: true,
                       overflow: TextOverflow.ellipsis,
                       maxLines: maxLinesDenseComment,
