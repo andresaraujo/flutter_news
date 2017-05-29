@@ -1,3 +1,4 @@
+import 'package:flutter_news/fnews_configuration.dart';
 import 'package:timeago/timeago.dart';
 
 import 'package:flutter/material.dart';
@@ -8,9 +9,10 @@ import 'package:flutter_news/module/stories/item_presenter.dart';
 import 'package:flutter_news/module/comments/comments_view.dart';
 
 class ItemTile extends StatefulWidget {
+  final FlutterNewsConfiguration configuration;
   final int itemId;
 
-  ItemTile(this.itemId);
+  ItemTile(this.itemId, this.configuration);
 
   @override
   ItemTileState createState() => new ItemTileState();
@@ -70,7 +72,7 @@ class ItemTileState extends State<ItemTile> implements ItemViewContract {
   void _onTapItem(HnItem item) {
     final MaterialPageRoute<Null> page = new MaterialPageRoute<Null>(
       settings: new RouteSettings(name: '${widget.itemId}'),
-      builder: (_) => new CommentsPage(item),
+      builder: (_) => new CommentsPage(item, widget.configuration),
     );
     Navigator.of(context).push(page);
   }

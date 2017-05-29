@@ -1,6 +1,6 @@
 # flutter_news
 
-A Hacker News made with [Flutter](http://flutter.io/).
+A Hacker News client made with [Flutter](http://flutter.io/).
 
 | iOS | Android |
 | --- | ------- |

@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
+
 import 'package:flutter_news/injection/dependency_injection.dart';
 import 'package:flutter_news/model/hn_stories.dart';
 
@@ -25,8 +27,8 @@ class StoriesListPresenter {
     try {
       stories = await _repository.load(storyType, forceReload);
       _view.onLoadStoriesComplete(stories);
-    } catch (error) {
-      print(error);
+    } catch (e) {
+      debugPrint('Exception while loading stories:\n  $e');
       _view.onLoadStoriesError();
     }
   }

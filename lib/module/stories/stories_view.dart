@@ -78,6 +78,14 @@ class HnStoriesPageState extends State<HnStoriesPage>
       widget.updater(widget.configuration.copyWith(themeName: themeName));
   }
 
+  void _handleShowFullCommentChange(bool showFullComment) {
+    storeShowFullCommentToPrefs(showFullComment);
+
+    if (widget.updater != null)
+      widget.updater(
+          widget.configuration.copyWith(showFullComment: showFullComment));
+  }
+
   BottomNavigationBarItem _buildNavItem(IconData icon, String title) {
     return new BottomNavigationBarItem(
       icon: new Icon(icon),
@@ -136,6 +144,14 @@ class HnStoriesPageState extends State<HnStoriesPage>
               _handleThemeChange(ThemeName.dark);
             },
           ),
+          const Divider(),
+          new ListTile(
+            title: const Text('Show full comments'),
+            trailing: new Switch(
+              value: widget.configuration.showFullComment,
+              onChanged: _handleShowFullCommentChange,
+            ),
+          ),
         ],
       ),
     );
@@ -155,7 +171,7 @@ class HnStoriesPageState extends State<HnStoriesPage>
               delegate: new SliverChildBuilderDelegate(
                 (BuildContext context, int index) {
                   final int storyId = _stories.storyList[index];
-                  return new ItemTile(storyId);
+                  return new ItemTile(storyId, widget.configuration);
                 },
                 childCount: _storyCount,
               ),
