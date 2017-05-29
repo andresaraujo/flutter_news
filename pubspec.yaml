@@ -9,6 +9,7 @@ dependencies:
   shared_preferences:
   intl: '>=0.14.0 <0.15.0'
   intl_translation: '>=0.14.0 <0.15.0'
+  html_unescape: "^0.1.4"
 
 flutter:
   uses-material-design: true
