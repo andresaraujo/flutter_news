@@ -81,7 +81,7 @@ class CommentTileState extends State<CommentTile>
   }
 
   Widget _buildReplyButton() {
-    if (_item.kids.length == 0) return null;
+    if (_item.kids.isEmpty) return null;
 
     return new ButtonTheme.bar(
       child: new ButtonBar(

@@ -147,7 +147,7 @@ class HnStoriesPageState extends State<HnStoriesPage>
           const Divider(),
           new ListTile(
             title: const Text('Show full comments'),
-            trailing: new Checkbox(
+            trailing: new Switch(
               value: widget.configuration.showFullComment,
               onChanged: _handleShowFullCommentChange,
             ),

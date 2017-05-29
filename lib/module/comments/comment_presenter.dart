@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
+
 import 'package:flutter_news/injection/dependency_injection.dart';
 import 'package:flutter_news/model/hn_item.dart';
 
@@ -22,8 +24,8 @@ class CommentPresenter {
     try {
       final HnItem item = await _repository.load(itemId);
       _view.onLoadCommentComplete(item);
-    } catch (error) {
-      print(error);
+    } catch (e) {
+      debugPrint('Exception while loading comment:\n  $e');
       _view.onLoadCommentError();
     }
   }

@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
+
 import 'package:flutter_news/injection/dependency_injection.dart';
 import 'package:flutter_news/model/hn_item.dart';
 
@@ -24,8 +26,8 @@ class ItemPresenter {
     try {
       item = await _repository.load(itemId, forceReload);
       _view.onLoadItemComplete(item);
-    } catch (error) {
-      print(error);
+    } catch (e) {
+      debugPrint('Exception while loading item:\n  $e');
       _view.onLoadItemError();
     }
   }
