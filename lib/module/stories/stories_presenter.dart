@@ -22,10 +22,8 @@ class StoriesListPresenter {
       [bool forceReload = false]) async {
     assert(_view != null);
 
-    HnStories stories;
-
     try {
-      stories = await _repository.load(storyType, forceReload);
+      final stories = await _repository.load(storyType, forceReload);
       _view.onLoadStoriesComplete(stories);
     } catch (e) {
       debugPrint('Exception while loading stories:\n  $e');

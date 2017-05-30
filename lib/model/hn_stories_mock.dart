@@ -34,8 +34,8 @@ class MockHnStoriesRepository extends HnStoriesRepository {
         break;
     }
 
-    final String mockData =
-        await rootBundle.loadString('assets/mock_data/$_mockFileName.json');
+    final mockData = await rootBundle.loadString(
+        'assets/mock_data/$_mockFileName.json');
 
     final List<int> storiesList = jsonCodec.decode(mockData);
 

@@ -14,8 +14,8 @@ class LiveHnItemRepository extends HnItemRepository {
 
   @override
   Future<HnItem> fetch(int itemId) async {
-    final http.Response response = await http.get('$_itemUrl/$itemId.json');
-    final int statusCode = response.statusCode;
+    final response = await http.get('$_itemUrl/$itemId.json');
+    final statusCode = response.statusCode;
 
     if (statusCode < 200 || statusCode >= 300 || response.body == null) {
       throw new FetchDataException(

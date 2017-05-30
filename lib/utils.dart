@@ -1,10 +1,10 @@
 String parseDomain(String url) {
   url = url.replaceFirst(new RegExp(r'https?:\/\/(www.)?|www.'), '');
   if (url.contains('/')) {
-    final List<String> parts = url.split('/');
+    final parts = url.split('/');
     url = parts[0];
   } else if (url.contains('?')) {
-    final List<String> parts = url.split('?');
+    final parts = url.split('?');
     url = parts[0];
   }
   return url;

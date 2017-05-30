@@ -9,7 +9,7 @@ class CommentsTitleTile extends StatelessWidget {
   CommentsTitleTile(this.item);
 
   Widget _buildTop(String title, String url, TextTheme textTheme) {
-    final List<TextSpan> children = <TextSpan>[];
+    final children = <TextSpan>[];
 
     if (url.isNotEmpty) {
       children.add(new TextSpan(
@@ -31,7 +31,7 @@ class CommentsTitleTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final TextTheme textTheme = Theme.of(context).textTheme;
+    final textTheme = Theme.of(context).textTheme;
 
     Widget topWidget;
     Widget bottomWidget;

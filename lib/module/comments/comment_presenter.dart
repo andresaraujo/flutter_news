@@ -22,7 +22,7 @@ class CommentPresenter {
     assert(_view != null);
 
     try {
-      final HnItem item = await _repository.load(itemId);
+      final item = await _repository.load(itemId);
       _view.onLoadCommentComplete(item);
     } catch (e) {
       debugPrint('Exception while loading comment:\n  $e');

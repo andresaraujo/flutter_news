@@ -43,8 +43,8 @@ class LiveHnStoryRepository extends HnStoriesRepository {
         break;
     }
 
-    final http.Response response = await http.get(_fetchUrl);
-    final int statusCode = response.statusCode;
+    final response = await http.get(_fetchUrl);
+    final statusCode = response.statusCode;
 
     if (statusCode < 200 || statusCode >= 300 || response.body == null) {
       throw new FetchDataException(
