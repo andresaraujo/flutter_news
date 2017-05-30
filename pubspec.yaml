@@ -9,10 +9,7 @@ dependencies:
   shared_preferences:
   intl: '>=0.14.0 <0.15.0'
   intl_translation: '>=0.14.0 <0.15.0'
-  html_unescape:
-    git:
-      url: git://github.com/andresaraujo/html_unescape.git
-      ref: patch-1
+  html_unescape: '^0.1.5'
 
 flutter:
   uses-material-design: true
