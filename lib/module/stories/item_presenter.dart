@@ -21,10 +21,8 @@ class ItemPresenter {
   Future<Null> loadItem(int itemId, [bool forceReload = false]) async {
     assert(_view != null);
 
-    HnItem item;
-
     try {
-      item = await _repository.load(itemId, forceReload);
+      final item = await _repository.load(itemId, forceReload);
       _view.onLoadItemComplete(item);
     } catch (e) {
       debugPrint('Exception while loading item:\n  $e');

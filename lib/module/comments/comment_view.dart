@@ -27,7 +27,7 @@ class CommentTileState extends State<CommentTile>
   CommentPresenter _presenter;
   bool _showFullComment;
 
-  final HtmlUnescape _unescape = new HtmlUnescape();
+  final _unescape = new HtmlUnescape();
 
   @override
   void initState() {
@@ -104,15 +104,15 @@ class CommentTileState extends State<CommentTile>
 
   @override
   Widget build(BuildContext context) {
-    final TextTheme textTheme = Theme.of(context).textTheme;
+    final textTheme = Theme.of(context).textTheme;
 
-    final String itemText = _unescape.convert(_item.text);
+    final itemText = _unescape.convert(_item.text);
 
     return new Card(
       child: new InkWell(
         onTap: _onTapItem,
         child: new Padding(
-          padding: new EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 16.0),
+          padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 16.0),
           child: new Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
@@ -147,7 +147,7 @@ class CommentTileState extends State<CommentTile>
   }
 
   void _onShowRepliesPressed() {
-    final MaterialPageRoute<Null> page = new MaterialPageRoute<Null>(
+    final page = new MaterialPageRoute<Null>(
       settings: new RouteSettings(name: '${_item.itemId}'),
       builder: (_) => new CommentsPage(_item, widget.configuration),
     );

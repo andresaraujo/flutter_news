@@ -63,7 +63,7 @@ class FlutterNewsAppState extends State<FlutterNewsApp> {
   }
 
   Future<LocaleQueryData> _onLocaleChanged(Locale locale) async {
-    final String localeString = locale.languageCode;
+    final localeString = locale.languageCode;
     await initializeMessages(localeString);
     Intl.defaultLocale = localeString;
     return FlutterNewsStrings.instance;

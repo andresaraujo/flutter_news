@@ -24,7 +24,7 @@ class HnStoriesPageState extends State<HnStoriesPage>
     implements StoriesListViewContract {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
-      new GlobalKey<RefreshIndicatorState>();
+  new GlobalKey<RefreshIndicatorState>();
 
   StoriesListPresenter _presenter;
 
@@ -50,7 +50,7 @@ class HnStoriesPageState extends State<HnStoriesPage>
 
     // Show RefreshIndicator
     // This will call onRefresh() method and load stories
-    final Future<Null> load = new Future<Null>.value(null);
+    final load = new Future<Null>.value(null);
     load.then((_) {
       _refreshIndicatorKey.currentState.show();
     });
@@ -71,11 +71,12 @@ class HnStoriesPageState extends State<HnStoriesPage>
     // TODO: implement onLoadStoriesError
   }
 
-  void _handleThemeChange(ThemeName themeName) {
-    storeThemeToPrefs(themeName);
+  void _handleThemeChange(bool darkTheme) {
+    final theme = darkTheme ? ThemeName.dark : ThemeName.light;
+    storeThemeToPrefs(theme);
 
     if (widget.updater != null)
-      widget.updater(widget.configuration.copyWith(themeName: themeName));
+      widget.updater(widget.configuration.copyWith(themeName: theme));
   }
 
   void _handleShowFullCommentChange(bool showFullComment) {
@@ -94,7 +95,7 @@ class HnStoriesPageState extends State<HnStoriesPage>
   }
 
   Widget _buildAppTitle(BuildContext context) {
-    final Color titleColor = (widget.configuration.themeName == ThemeName.light)
+    final titleColor = (widget.configuration.themeName == ThemeName.light)
         ? Colors.white
         : Colors.orange;
 
@@ -123,26 +124,11 @@ class HnStoriesPageState extends State<HnStoriesPage>
               child: new Center(
                   child: new Text(FlutterNewsStrings.of(context).title()))),
           new ListTile(
-            title: const Text('Light Theme'),
-            trailing: new Radio<ThemeName>(
-              value: ThemeName.light,
-              groupValue: widget.configuration.themeName,
+            title: const Text('Night mode'),
+            trailing: new Switch(
+              value: widget.configuration.themeName == ThemeName.dark,
               onChanged: _handleThemeChange,
             ),
-            onTap: () {
-              _handleThemeChange(ThemeName.light);
-            },
-          ),
-          new ListTile(
-            title: const Text('Dark Theme'),
-            trailing: new Radio<ThemeName>(
-              value: ThemeName.dark,
-              groupValue: widget.configuration.themeName,
-              onChanged: _handleThemeChange,
-            ),
-            onTap: () {
-              _handleThemeChange(ThemeName.dark);
-            },
           ),
           const Divider(),
           new ListTile(
@@ -158,7 +144,7 @@ class HnStoriesPageState extends State<HnStoriesPage>
   }
 
   Widget _buildBody(BuildContext context) {
-    final EdgeInsets padding = const EdgeInsets.all(8.0);
+    final padding = const EdgeInsets.all(8.0);
 
     return new RefreshIndicator(
       key: _refreshIndicatorKey,
@@ -169,7 +155,7 @@ class HnStoriesPageState extends State<HnStoriesPage>
             padding: padding,
             sliver: new SliverList(
               delegate: new SliverChildBuilderDelegate(
-                (BuildContext context, int index) {
+                    (BuildContext context, int index) {
                   final int storyId = _stories.storyList[index];
                   return new ItemTile(storyId, widget.configuration);
                 },
@@ -188,7 +174,9 @@ class HnStoriesPageState extends State<HnStoriesPage>
       key: _scaffoldKey,
       appBar: new AppBar(
         title: _buildAppTitle(context),
-        elevation: Theme.of(context).platform == TargetPlatform.iOS ? 0.0 : 4.0,
+        elevation: Theme
+            .of(context)
+            .platform == TargetPlatform.iOS ? 0.0 : 4.0,
       ),
       drawer: _buildDrawer(context),
       bottomNavigationBar: new BottomNavigationBar(

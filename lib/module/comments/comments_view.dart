@@ -31,7 +31,7 @@ class CommentsPageState extends State<CommentsPage> {
   @override
   Widget build(BuildContext context) {
     String title;
-    final List<IconButton> appBarActions = <IconButton>[];
+    final appBarActions = <IconButton>[];
 
     switch (widget.item.type) {
       case 'story':
@@ -68,7 +68,7 @@ class CommentsPageState extends State<CommentsPage> {
           child: new CommentsTitleTile(widget.item),
         ),
         new SliverPadding(
-          padding: new EdgeInsets.fromLTRB(8.0, 8.0, 0.0, 0.0),
+          padding: const EdgeInsets.fromLTRB(8.0, 8.0, 0.0, 0.0),
           sliver: new SliverList(
             delegate: new SliverChildBuilderDelegate(
               (BuildContext context, int index) {
@@ -89,6 +89,6 @@ class CommentsPageState extends State<CommentsPage> {
 
   void _share() {
     _scaffoldKey.currentState
-        .showSnackBar(new SnackBar(content: new Text('Not implemented yet!')));
+        .showSnackBar(const SnackBar(content: const Text('Not implemented yet!')));
   }
 }

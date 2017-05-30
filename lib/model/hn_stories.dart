@@ -8,25 +8,23 @@ class HnStories {
 
   const HnStories({this.storyType, this.storyList});
 
-  HnStories.fromList(StoryType storyType, List<int> list)
-      : storyType = storyType,
-        storyList = list;
+  HnStories.fromList(this.storyType, this.storyList);
 }
 
 abstract class HnStoriesRepository {
-  static Map<String, HnStories> _cache = new Map<String, HnStories>();
+  static Map<String, HnStories> _cache = <String, HnStories>{};
 
   // Abstract method to be defined in implementations
   Future<HnStories> fetch(StoryType storyType);
 
   Future<HnStories> load(StoryType storyType,
       [bool forceReload = false]) async {
-    final String storyTypeString = storyType.toString();
+    final storyTypeString = storyType.toString();
 
     if (_cache.containsKey(storyTypeString) && !forceReload) {
       return _cache[storyTypeString];
     } else {
-      final HnStories hnStories = await fetch(storyType);
+      final hnStories = await fetch(storyType);
       _cache[storyTypeString] = hnStories;
       return hnStories;
     }

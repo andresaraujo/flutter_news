@@ -12,13 +12,13 @@ const String prefsKeyExpandCommentTree = "expandCommentTree";
 
 Future<Null> storeThemeToPrefs(ThemeName themeName) async {
   assert(themeName != null);
-  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  final prefs = await SharedPreferences.getInstance();
   prefs.setString(prefsKeyTheme, themeName.toString());
 }
 
 Future<Null> storeShowFullCommentToPrefs(bool showFullComment) async {
   assert(showFullComment != null);
-  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  final prefs = await SharedPreferences.getInstance();
   prefs.setBool(prefsKeyShowFullComment, showFullComment);
 }
 
@@ -47,7 +47,7 @@ class FlutterNewsConfiguration {
   }
 
   static Future<FlutterNewsConfiguration> loadFromPrefs() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final prefs = await SharedPreferences.getInstance();
 
     // Retrieve theme name
     ThemeName themeName;
@@ -65,12 +65,10 @@ class FlutterNewsConfiguration {
     }
 
     // Retrieve show full comment setting
-    final bool showFullComment =
-        prefs.getBool(prefsKeyShowFullComment) ?? false;
+    final showFullComment = prefs.getBool(prefsKeyShowFullComment) ?? false;
 
     // Retrieve expand comments setting
-    final bool expandCommentTree =
-        prefs.getBool(prefsKeyExpandCommentTree) ?? false;
+    final expandCommentTree = prefs.getBool(prefsKeyExpandCommentTree) ?? false;
 
     return new FlutterNewsConfiguration(
       themeName: themeName,

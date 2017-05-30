@@ -1,5 +1,5 @@
 import 'package:flutter_news/fnews_configuration.dart';
-import 'package:timeago/timeago.dart';
+import 'package:timeago/timeago.dart' as ta;
 
 import 'package:flutter/material.dart';
 
@@ -70,7 +70,7 @@ class ItemTileState extends State<ItemTile> implements ItemViewContract {
   }
 
   void _onTapItem(HnItem item) {
-    final MaterialPageRoute<Null> page = new MaterialPageRoute<Null>(
+    final page = new MaterialPageRoute<Null>(
       settings: new RouteSettings(name: '${widget.itemId}'),
       builder: (_) => new CommentsPage(item, widget.configuration),
     );
@@ -78,7 +78,7 @@ class ItemTileState extends State<ItemTile> implements ItemViewContract {
   }
 
   Widget _buildBadge(int count, Color backgroundColor, TextTheme textTheme) {
-    final TextStyle textStyle =
+    final textStyle =
         textTheme.caption.copyWith(color: Colors.white, fontSize: 10.0);
     return new Container(
         margin: const EdgeInsets.only(bottom: 2.0),
@@ -89,22 +89,22 @@ class ItemTileState extends State<ItemTile> implements ItemViewContract {
           shape: BoxShape.circle,
         ),
         child: new Container(
-            padding: new EdgeInsets.all(2.0),
+            padding: const EdgeInsets.all(2.0),
             child: new Center(
                 child: new Text(count.toString(), style: textStyle))));
   }
 
   Widget _buildText(String text, TextTheme textTheme) {
     return new Container(
-        padding: new EdgeInsets.only(bottom: 5.0),
+        padding: const EdgeInsets.only(bottom: 5.0),
         child: new Text(
-          text.length > 0 ? text : "",
+          text.isNotEmpty ? text : "",
           style: textTheme.caption,
         ));
   }
 
   Widget _buildTop(TextTheme textTheme) {
-    final List<TextSpan> children = <TextSpan>[];
+    final children = <TextSpan>[];
 
     if (_item.url.isNotEmpty) {
       children.add(new TextSpan(
@@ -124,24 +124,23 @@ class ItemTileState extends State<ItemTile> implements ItemViewContract {
 
   @override
   Widget build(BuildContext context) {
-    final ThemeData theme = Theme.of(context);
+    final theme = Theme.of(context);
 
-    final TextTheme textTheme = theme.textTheme;
+    final textTheme = theme.textTheme;
 
-    final TimeAgo fuzzyTime = new TimeAgo();
-    final String timeAgo = fuzzyTime
-        .format(new DateTime.fromMillisecondsSinceEpoch(_item.time * 1000));
+    final timeAgo =
+        ta.timeAgo(new DateTime.fromMillisecondsSinceEpoch(_item.time * 1000));
 
-    final List<Widget> badgeChildren = <Widget>[
+    final badgeChildren = <Widget>[
       _buildBadge(_item.score, Colors.orange, textTheme),
       _buildBadge(_item.commentsCount, theme.disabledColor, textTheme),
     ];
 
-    final Widget itemColumn = new Column(
+    final itemColumn = new Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           _buildTop(textTheme),
-          _item.user.length > 0
+          _item.user.isNotEmpty
               ? _buildText('by ${_item.user} | $timeAgo', textTheme)
               : _buildText('id ${widget.itemId}', textTheme),
         ]);
@@ -149,11 +148,11 @@ class ItemTileState extends State<ItemTile> implements ItemViewContract {
     return new InkWell(
         onTap: () => _onTapItem(_item),
         child: new Container(
-          padding: new EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+          padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
           child: new Row(children: <Widget>[
             new Expanded(
                 child: new Container(
-              padding: new EdgeInsets.only(right: 10.0),
+              padding: const EdgeInsets.only(right: 10.0),
               child: new Column(children: badgeChildren),
             )),
             new Expanded(

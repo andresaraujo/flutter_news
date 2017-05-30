@@ -10,8 +10,8 @@ const JsonCodec jsonCodec = const JsonCodec();
 class MockHnItemRepository extends HnItemRepository {
   @override
   Future<HnItem> fetch(int itemId) async {
-    final String mockData =
-        await rootBundle.loadString('assets/mock_data/$itemId.json');
+    final mockData = await rootBundle.loadString(
+        'assets/mock_data/$itemId.json');
 
     final Map<String, dynamic> item = jsonCodec.decode(mockData);
 
