@@ -106,7 +106,20 @@ class CommentTileState extends State<CommentTile>
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
 
+    final defaultStyle = DefaultTextStyle.of(context).style;
+    final italicStyle = defaultStyle.copyWith(fontStyle: FontStyle.italic);
+
     final itemText = _unescape.convert(_item.text);
+    final textLines = itemText.split('\n');
+
+    final textSpanList = <TextSpan>[];
+    for (var line in textLines) {
+      if (line.isEmpty) line = "\n\n";
+      textSpanList.add(new TextSpan(
+        text: line,
+        style: (line[0] == '>') ? italicStyle : defaultStyle,
+      ));
+    }
 
     return new Card(
       child: new InkWell(
@@ -122,21 +135,15 @@ class CommentTileState extends State<CommentTile>
                 style: textTheme.caption,
               ),
               // Comment text
-              (_showFullComment)
-                  ? new Text(
-                      itemText,
-                      softWrap: true,
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: maxLinesFullComment,
-                      style: textTheme.body1,
-                    )
-                  : new Text(
-                      itemText,
-                      softWrap: true,
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: maxLinesDenseComment,
-                      style: textTheme.body1,
-                    ),
+              new RichText(
+                text: new TextSpan(
+                  style: defaultStyle,
+                  children: textSpanList,
+                ),
+                maxLines: (_showFullComment)
+                    ? maxLinesFullComment
+                    : maxLinesDenseComment,
+              ),
               // Show Reply button
               _buildReplyButton(),
             ].where(notNull).toList(),
