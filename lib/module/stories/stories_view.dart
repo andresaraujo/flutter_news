@@ -24,7 +24,7 @@ class HnStoriesPageState extends State<HnStoriesPage>
     implements StoriesListViewContract {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
-  new GlobalKey<RefreshIndicatorState>();
+      new GlobalKey<RefreshIndicatorState>();
 
   StoriesListPresenter _presenter;
 
@@ -149,21 +149,13 @@ class HnStoriesPageState extends State<HnStoriesPage>
     return new RefreshIndicator(
       key: _refreshIndicatorKey,
       onRefresh: _onRefresh,
-      child: new CustomScrollView(
-        slivers: <Widget>[
-          new SliverPadding(
-            padding: padding,
-            sliver: new SliverList(
-              delegate: new SliverChildBuilderDelegate(
-                    (BuildContext context, int index) {
-                  final int storyId = _stories.storyList[index];
-                  return new ItemTile(storyId, widget.configuration);
-                },
-                childCount: _storyCount,
-              ),
-            ),
-          ),
-        ],
+      child: new ListView.builder(
+        padding: padding,
+        itemCount: _storyCount,
+        itemBuilder: (BuildContext context, int index) {
+          final int storyId = _stories.storyList[index];
+          return new ItemTile(storyId, widget.configuration);
+        },
       ),
     );
   }
@@ -174,9 +166,7 @@ class HnStoriesPageState extends State<HnStoriesPage>
       key: _scaffoldKey,
       appBar: new AppBar(
         title: _buildAppTitle(context),
-        elevation: Theme
-            .of(context)
-            .platform == TargetPlatform.iOS ? 0.0 : 4.0,
+        elevation: Theme.of(context).platform == TargetPlatform.iOS ? 0.0 : 4.0,
       ),
       drawer: _buildDrawer(context),
       bottomNavigationBar: new BottomNavigationBar(
