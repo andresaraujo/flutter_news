@@ -12,7 +12,7 @@ class HnStories {
 }
 
 abstract class HnStoriesRepository {
-  static Map<String, HnStories> _cache = <String, HnStories>{};
+  static final _cache = <String, HnStories>{};
 
   // Abstract method to be defined in implementations
   Future<HnStories> fetch(StoryType storyType);

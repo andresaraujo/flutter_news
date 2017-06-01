@@ -7,10 +7,10 @@ import 'package:flutter_news/model/fetch_exception.dart';
 import 'package:flutter_news/model/hn_item.dart';
 
 class LiveHnItemRepository extends HnItemRepository {
-  static const String _baseUrl = 'https://hacker-news.firebaseio.com/v0';
-  static const String _itemUrl = '$_baseUrl/item';
+  static const _baseUrl = 'https://hacker-news.firebaseio.com/v0';
+  static const _itemUrl = '$_baseUrl/item';
 
-  final JsonCodec _jsonCodec = const JsonCodec();
+  final _jsonCodec = const JsonCodec();
 
   @override
   Future<HnItem> fetch(int itemId) async {

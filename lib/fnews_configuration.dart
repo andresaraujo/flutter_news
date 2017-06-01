@@ -4,11 +4,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 enum ThemeName { light, dark }
 
-const ThemeName defaultTheme = ThemeName.light;
+const defaultTheme = ThemeName.light;
 
-const String prefsKeyTheme = "theme";
-const String prefsKeyShowFullComment = "showFullComment";
-const String prefsKeyExpandCommentTree = "expandCommentTree";
+const prefsKeyTheme = "theme";
+const prefsKeyShowFullComment = "showFullComment";
+const prefsKeyExpandCommentTree = "expandCommentTree";
 
 Future<Null> storeThemeToPrefs(ThemeName themeName) async {
   assert(themeName != null);

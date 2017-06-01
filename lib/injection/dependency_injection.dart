@@ -8,7 +8,7 @@ import 'package:flutter_news/model/hn_stories_mock.dart';
 enum Environment { mock, production }
 
 class Injector {
-  static final Injector _singleton = new Injector._internal();
+  static final _singleton = new Injector._internal();
   static Environment _environment;
 
   factory Injector() {

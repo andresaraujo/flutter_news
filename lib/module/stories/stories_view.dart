@@ -22,9 +22,8 @@ class HnStoriesPage extends StatefulWidget {
 
 class HnStoriesPageState extends State<HnStoriesPage>
     implements StoriesListViewContract {
-  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
-  final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
-      new GlobalKey<RefreshIndicatorState>();
+  final _scaffoldKey = new GlobalKey<ScaffoldState>();
+  final _refreshIndicatorKey = new GlobalKey<RefreshIndicatorState>();
 
   StoriesListPresenter _presenter;
 
@@ -166,7 +165,9 @@ class HnStoriesPageState extends State<HnStoriesPage>
       key: _scaffoldKey,
       appBar: new AppBar(
         title: _buildAppTitle(context),
-        elevation: Theme.of(context).platform == TargetPlatform.iOS ? 0.0 : 4.0,
+        elevation: Theme
+            .of(context)
+            .platform == TargetPlatform.iOS ? 0.0 : 4.0,
       ),
       drawer: _buildDrawer(context),
       bottomNavigationBar: new BottomNavigationBar(

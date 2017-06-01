@@ -9,13 +9,13 @@ import 'package:flutter_news/model/hn_stories.dart';
 const JsonCodec jsonCodec = const JsonCodec();
 
 class LiveHnStoryRepository extends HnStoriesRepository {
-  static const String _baseUrl = 'https://hacker-news.firebaseio.com/v0';
-  static const String _topStoriesUrl = '$_baseUrl/topstories.json';
-  static const String _newStoriesUrl = '$_baseUrl/newstories.json';
-  static const String _bestStoriesUrl = '$_baseUrl/beststories.json';
-  static const String _showStoriesUrl = '$_baseUrl/showstories.json';
-  static const String _jobStoriesUrl = '$_baseUrl/jobstories.json';
-  static const String _askStoriesUrl = '$_baseUrl/askstories.json';
+  static const _baseUrl = 'https://hacker-news.firebaseio.com/v0';
+  static const _topStoriesUrl = '$_baseUrl/topstories.json';
+  static const _newStoriesUrl = '$_baseUrl/newstories.json';
+  static const _bestStoriesUrl = '$_baseUrl/beststories.json';
+  static const _showStoriesUrl = '$_baseUrl/showstories.json';
+  static const _jobStoriesUrl = '$_baseUrl/jobstories.json';
+  static const _askStoriesUrl = '$_baseUrl/askstories.json';
 
   @override
   Future<HnStories> fetch(StoryType storyType) async {

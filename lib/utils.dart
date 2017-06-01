@@ -19,7 +19,7 @@ String formatText(String str) {
       .replaceAll(new RegExp('&#x27;'), '\'')
       .replaceAll(new RegExp('&quot;'), '\"')
       .replaceAll(
-          new RegExp(r'<a\s+(?:[^>]*?\s+)?href="([^"]*)" rel="nofollow">'), '')
+      new RegExp(r'<a\s+(?:[^>]*?\s+)?href="([^"]*)" rel="nofollow">'), '')
       .replaceAll(new RegExp('</a>'), '');
 }
 
