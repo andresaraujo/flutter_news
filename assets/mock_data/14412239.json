@@ -1,0 +1,1 @@
+{"by":"petters","id":14412239,"parent":14411398,"text":"I have worked at a company using one repo per team and at Google which uses a big monorepo. I much prefer the latter. As long as you have the infrastructure to support it, I see no other downsides (obviously, Google does not use git).","time":1495650190,"type":"comment"}

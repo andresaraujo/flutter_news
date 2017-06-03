@@ -86,6 +86,14 @@ class HnStoriesPageState extends State<HnStoriesPage>
           widget.configuration.copyWith(showFullComment: showFullComment));
   }
 
+  void _handleExpandCommentTreeChange(bool expandCommentTree) {
+    storeExpandCommentTreeToPrefs(expandCommentTree);
+
+    if (widget.updater != null)
+      widget.updater(
+          widget.configuration.copyWith(expandCommentTree: expandCommentTree));
+  }
+
   BottomNavigationBarItem _buildNavItem(IconData icon, String title) {
     return new BottomNavigationBarItem(
       icon: new Icon(icon),
@@ -137,6 +145,14 @@ class HnStoriesPageState extends State<HnStoriesPage>
               onChanged: _handleShowFullCommentChange,
             ),
           ),
+          const Divider(),
+          new ListTile(
+            title: const Text('Unfold all comments'),
+            trailing: new Switch(
+              value: widget.configuration.expandCommentTree,
+              onChanged: _handleExpandCommentTreeChange,
+            ),
+          ),
         ],
       ),
     );
@@ -165,9 +181,7 @@ class HnStoriesPageState extends State<HnStoriesPage>
       key: _scaffoldKey,
       appBar: new AppBar(
         title: _buildAppTitle(context),
-        elevation: Theme
-            .of(context)
-            .platform == TargetPlatform.iOS ? 0.0 : 4.0,
+        elevation: Theme.of(context).platform == TargetPlatform.iOS ? 0.0 : 4.0,
       ),
       drawer: _buildDrawer(context),
       bottomNavigationBar: new BottomNavigationBar(
