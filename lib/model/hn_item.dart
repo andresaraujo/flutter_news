@@ -16,7 +16,6 @@ class HnItem {
   final int commentsCount;
   final List<int> kids;
   // Helper properties
-  bool isCached;
   int depthLevel;
 
   HnItem({
@@ -31,7 +30,6 @@ class HnItem {
     this.commentsCount,
     this.kids,
     this.time,
-    this.isCached,
     this.depthLevel,
   });
 
@@ -47,39 +45,7 @@ class HnItem {
         type = map['type'] ?? 'story',
         deleted = map['deleted'] ?? false,
         time = map['time'] ?? new DateTime.now().millisecondsSinceEpoch / 1000,
-        isCached = false,
         depthLevel = 1;
-
-  // Creates a copy of this object but with the given fields replaced with the new values.
-  /*
-  HnItem copyWith({
-    int itemId,
-    String title,
-    String text,
-    String type,
-    bool deleted,
-    int time,
-    String url,
-    String user,
-    int score,
-    int commentsCount,
-    List<int> kids,
-  }) {
-    return new HnItem(
-      itemId: itemId ?? this.itemId,
-      title: title ?? this.title,
-      text: text ?? this.text,
-      type: type ?? this.type,
-      deleted: deleted ?? this.deleted,
-      time: time ?? this.time,
-      url: url ?? this.url,
-      user: user ?? this.user,
-      score: score ?? this.score,
-      commentsCount: commentsCount ?? this.commentsCount,
-      kids: kids ?? this.kids,
-    );
-  }
-  */
 }
 
 abstract class HnItemRepository {
@@ -93,7 +59,6 @@ abstract class HnItemRepository {
     HnItem item;
     if (_cache.containsKey(itemId) && !forceReload) {
       item = _cache[itemId];
-      item.isCached = true;
     } else {
       item = await fetch(itemId);
       _cache[itemId] = item;

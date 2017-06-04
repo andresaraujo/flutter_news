@@ -11,7 +11,7 @@ import 'package:flutter_news/module/stories/stories_view.dart';
 
 void main() {
   // Injector for selecting data source: Environment.production or Environment.mock
-  Injector.configure(Environment.mock);
+  Injector.configure(Environment.production);
   runApp(new FlutterNewsApp());
 }
 

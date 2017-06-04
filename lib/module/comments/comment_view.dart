@@ -49,7 +49,6 @@ class CommentTileState extends State<CommentTile>
       score: 0,
       commentsCount: 0,
       kids: <int>[],
-      isCached: false,
       depthLevel: 0,
     );
 
@@ -57,13 +56,13 @@ class CommentTileState extends State<CommentTile>
     _expandCommentTree = widget.configuration.expandCommentTree;
 
     // Start loading comment
-    _presenter.loadComment(widget.itemId);
+    _presenter.loadComment(widget.itemId, widget.configuration);
   }
 
   @override
   void didUpdateWidget(CommentTile tile) {
     // Start loading comment
-    _presenter.loadComment(widget.itemId);
+    _presenter.loadComment(widget.itemId, widget.configuration);
     super.didUpdateWidget(tile);
   }
 
@@ -121,8 +120,6 @@ class CommentTileState extends State<CommentTile>
     final itemText = _unescape.convert(_item.text);
     final textLines = itemText.split('\n');
 
-    final depthLevel = (_item.depthLevel < 5) ? _item.depthLevel : 5;
-
     final textSpanList = <TextSpan>[];
     for (var line in textLines) {
       if (line.isEmpty) line = "\n\n";
@@ -131,6 +128,9 @@ class CommentTileState extends State<CommentTile>
         style: (line[0] == '>') ? italicStyle : defaultStyle,
       ));
     }
+
+    // Depth level indenting is limited to 5 levels
+    final depthLevel = (_item.depthLevel < 5) ? _item.depthLevel : 5;
 
     return new Padding(
       padding: new EdgeInsets.only(left: 8.0 * depthLevel),
@@ -144,8 +144,7 @@ class CommentTileState extends State<CommentTile>
               children: <Widget>[
                 // Comment user
                 new Text(
-                  //_item.user,
-                  '${_item.user} (${_item.itemId} / $depthLevel)',
+                  _item.user,
                   style: textTheme.caption,
                 ),
                 // Comment text
@@ -157,9 +156,10 @@ class CommentTileState extends State<CommentTile>
                   maxLines: (_showFullComment)
                       ? maxLinesFullComment
                       : maxLinesDenseComment,
+                  overflow: TextOverflow.ellipsis,
                 ),
                 // Show Reply button
-                (_expandCommentTree) ? null: _buildReplyButton(),
+                (_expandCommentTree) ? null : _buildReplyButton(),
               ].where(notNull).toList(),
             ),
           ),

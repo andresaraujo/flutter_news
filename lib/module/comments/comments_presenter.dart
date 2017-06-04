@@ -43,7 +43,6 @@ class CommentsPresenter {
       for (int kidId in kidList) {
         // Since kids are not loaded yet, we cannot update depth level
         // in repository. We will use temporary storage in map for now.
-        print('id:$kidId, depth: ${parentDepthLevel + 1}');
         _depthMap.putIfAbsent(kidId, () => parentDepthLevel + 1);
       }
     }
