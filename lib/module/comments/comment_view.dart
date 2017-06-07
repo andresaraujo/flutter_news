@@ -1,12 +1,13 @@
+import 'package:flutter_news/module/comments/comments_presenter.dart';
 import 'package:html_unescape/html_unescape.dart';
 
 import 'package:flutter/material.dart';
 
+import 'package:flutter_news/utils.dart';
 import 'package:flutter_news/fnews_configuration.dart';
 import 'package:flutter_news/model/hn_item.dart';
 import 'package:flutter_news/module/comments/comment_presenter.dart';
 import 'package:flutter_news/module/comments/comments_view.dart';
-import 'package:flutter_news/utils.dart';
 
 const int maxLinesDenseComment = 5;
 const int maxLinesFullComment = 80;
@@ -14,8 +15,9 @@ const int maxLinesFullComment = 80;
 class CommentTile extends StatefulWidget {
   final FlutterNewsConfiguration configuration;
   final int itemId;
+  final CommentsPresenter parentPresenter;
 
-  CommentTile(this.itemId, this.configuration);
+  CommentTile(this.itemId, this.configuration, this.parentPresenter);
 
   @override
   CommentTileState createState() => new CommentTileState();
@@ -26,6 +28,7 @@ class CommentTileState extends State<CommentTile>
   HnItem _item;
   CommentPresenter _presenter;
   bool _showFullComment;
+  bool _expandCommentTree;
 
   final _unescape = new HtmlUnescape();
 
@@ -33,7 +36,7 @@ class CommentTileState extends State<CommentTile>
   void initState() {
     super.initState();
 
-    _presenter = new CommentPresenter(this);
+    _presenter = new CommentPresenter(this, widget.parentPresenter);
     _item = new HnItem(
       itemId: 0,
       title: "",
@@ -46,15 +49,20 @@ class CommentTileState extends State<CommentTile>
       score: 0,
       commentsCount: 0,
       kids: <int>[],
+      depthLevel: 0,
     );
 
     _showFullComment = widget.configuration.showFullComment;
-    _presenter.loadComment(widget.itemId);
+    _expandCommentTree = widget.configuration.expandCommentTree;
+
+    // Start loading comment
+    _presenter.loadComment(widget.itemId, widget.configuration);
   }
 
   @override
   void didUpdateWidget(CommentTile tile) {
-    _presenter.loadComment(widget.itemId);
+    // Start loading comment
+    _presenter.loadComment(widget.itemId, widget.configuration);
     super.didUpdateWidget(tile);
   }
 
@@ -71,7 +79,7 @@ class CommentTileState extends State<CommentTile>
   void onLoadCommentError() {
     if (mounted) {
       setState(() {
-        _item = _item.copyWith(text: "Error loading comment");
+        _item.text = "Error loading comment id: ${widget.itemId}";
       });
     }
   }
@@ -121,32 +129,39 @@ class CommentTileState extends State<CommentTile>
       ));
     }
 
-    return new Card(
-      child: new InkWell(
-        onTap: _onTapItem,
-        child: new Padding(
-          padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 16.0),
-          child: new Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              // Comment user
-              new Text(
-                _item.user,
-                style: textTheme.caption,
-              ),
-              // Comment text
-              new RichText(
-                text: new TextSpan(
-                  style: defaultStyle,
-                  children: textSpanList,
+    // Depth level indenting is limited to 5 levels
+    final depthLevel = (_item.depthLevel < 5) ? _item.depthLevel : 5;
+
+    return new Padding(
+      padding: new EdgeInsets.only(left: 8.0 * depthLevel),
+      child: new Card(
+        child: new InkWell(
+          onTap: _onTapItem,
+          child: new Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: new Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                // Comment user
+                new Text(
+                  _item.user,
+                  style: textTheme.caption,
                 ),
-                maxLines: (_showFullComment)
-                    ? maxLinesFullComment
-                    : maxLinesDenseComment,
-              ),
-              // Show Reply button
-              _buildReplyButton(),
-            ].where(notNull).toList(),
+                // Comment text
+                new RichText(
+                  text: new TextSpan(
+                    style: defaultStyle,
+                    children: textSpanList,
+                  ),
+                  maxLines: (_showFullComment)
+                      ? maxLinesFullComment
+                      : maxLinesDenseComment,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                // Show Reply button
+                (_expandCommentTree) ? null : _buildReplyButton(),
+              ].where(notNull).toList(),
+            ),
           ),
         ),
       ),
