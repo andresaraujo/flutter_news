@@ -147,7 +147,7 @@ class HnStoriesPageState extends State<HnStoriesPage>
           ),
           const Divider(),
           new ListTile(
-            title: const Text('Unfold all comments'),
+            title: const Text('Expand all comments'),
             trailing: new Switch(
               value: widget.configuration.expandCommentTree,
               onChanged: _handleExpandCommentTreeChange,
