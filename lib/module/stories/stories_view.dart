@@ -2,7 +2,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_news/fnews_configuration.dart';
-import 'package:flutter_news/fnews_strings.dart';
 import 'package:flutter_news/model/hn_stories.dart';
 
 import 'package:flutter_news/module/stories/item_view.dart';
@@ -118,7 +117,7 @@ class HnStoriesPageState extends State<HnStoriesPage>
             )),
         child: new Text('F', style: new TextStyle(color: titleColor)),
       ),
-      new Text(FlutterNewsStrings.of(context).title(),
+      new Text('Flutter News',
           style: new TextStyle(color: titleColor))
     ]);
   }
@@ -129,7 +128,7 @@ class HnStoriesPageState extends State<HnStoriesPage>
         children: <Widget>[
           new DrawerHeader(
               child: new Center(
-                  child: new Text(FlutterNewsStrings.of(context).title()))),
+                  child: new Text('Flutter News'))),
           new ListTile(
             title: const Text('Night mode'),
             trailing: new Switch(
