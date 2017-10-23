@@ -11,7 +11,8 @@ import 'package:intl/src/intl_helpers.dart';
 import 'fnews_messages_en.dart' as messages_en;
 import 'fnews_messages_es.dart' as messages_es;
 
-Map<String, Function> _deferredLibraries = {
+typedef Future<dynamic> LibraryLoader();
+Map<String, LibraryLoader> _deferredLibraries = {
   'en': () => new Future.value(null),
   'es': () => new Future.value(null),
 };
@@ -41,7 +42,7 @@ bool _messagesExistFor(String locale) {
   var messages;
   try {
     messages = _findExact(locale);
-  } catch (e) {}
+  } catch (e) {/**/}
   return messages != null;
 }
 

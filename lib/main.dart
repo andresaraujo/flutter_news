@@ -1,18 +1,22 @@
 import 'dart:async';
 
-import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
-import 'package:flutter_news/fnews_configuration.dart';
 import 'package:flutter_news/fnews_strings.dart';
-import 'package:flutter_news/i18n/fnews_messages_all.dart';
+import 'package:flutter_news/fnews_configuration.dart';
 import 'package:flutter_news/injection/dependency_injection.dart';
 import 'package:flutter_news/module/stories/stories_view.dart';
 
-void main() {
-  // Injector for selecting data source: Environment.production or Environment.mock
-  Injector.configure(Environment.production);
-  runApp(new FlutterNewsApp());
+class _FlutterNewsLocalizationDelegate extends LocalizationsDelegate<FlutterNewsStrings> {
+  @override
+  Future<FlutterNewsStrings> load(Locale locale) => FlutterNewsStrings.load(locale);
+
+  @override
+  bool isSupported(Locale locale) => locale.languageCode == 'en' || locale.languageCode == 'es';
+
+  @override
+  bool shouldReload(_FlutterNewsLocalizationDelegate old) => false;
 }
 
 class FlutterNewsApp extends StatefulWidget {
@@ -62,19 +66,27 @@ class FlutterNewsAppState extends State<FlutterNewsApp> {
     });
   }
 
-  Future<LocaleQueryData> _onLocaleChanged(Locale locale) async {
-    final localeString = locale.languageCode;
-    await initializeMessages(localeString);
-    Intl.defaultLocale = localeString;
-    return FlutterNewsStrings.instance;
-  }
-
   @override
   Widget build(BuildContext context) {
     return new MaterialApp(
       theme: theme,
       home: new HnStoriesPage(_configuration, configurationUpdater),
-      onLocaleChanged: _onLocaleChanged,
+
+      localizationsDelegates: <LocalizationsDelegate<dynamic>>[
+        new _FlutterNewsLocalizationDelegate(),
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+      ],
+      supportedLocales: [
+        const Locale('en', 'US'),
+        const Locale('es', 'US')
+      ],
     );
   }
+}
+
+void main() {
+  // Injector for selecting data source: Environment.production or Environment.mock
+  Injector.configure(Environment.production);
+  runApp(new FlutterNewsApp());
 }

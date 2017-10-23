@@ -89,6 +89,6 @@ class CommentsPageState extends State<CommentsPage> {
 
   void _share() {
     _scaffoldKey.currentState
-        .showSnackBar(const SnackBar(content: const Text('Not implemented yet!')));
+        .showSnackBar(new SnackBar(content: new Text('Not implemented yet!')));
   }
 }

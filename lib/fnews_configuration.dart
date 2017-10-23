@@ -51,7 +51,7 @@ class FlutterNewsConfiguration {
 
     // Retrieve theme name
     ThemeName themeName;
-    final String themeString =
+    final themeString =
         prefs.getString(prefsKeyTheme) ?? defaultTheme.toString();
 
     switch (themeString) {

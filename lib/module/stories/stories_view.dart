@@ -110,7 +110,7 @@ class HnStoriesPageState extends State<HnStoriesPage>
             )),
         child: new Text('F', style: new TextStyle(color: titleColor)),
       ),
-      new Text(FlutterNewsStrings.of(context).title(),
+      new Text(FlutterNewsStrings.of(context).title,
           style: new TextStyle(color: titleColor))
     ]);
   }
@@ -121,17 +121,17 @@ class HnStoriesPageState extends State<HnStoriesPage>
         children: <Widget>[
           new DrawerHeader(
               child: new Center(
-                  child: new Text(FlutterNewsStrings.of(context).title()))),
+                  child: new Text(FlutterNewsStrings.of(context).title))),
           new ListTile(
-            title: const Text('Night mode'),
+            title: new Text('Night mode'),
             trailing: new Switch(
               value: widget.configuration.themeName == ThemeName.dark,
               onChanged: _handleThemeChange,
             ),
           ),
-          const Divider(),
+          new Divider(),
           new ListTile(
-            title: const Text('Show full comments'),
+            title: new Text('Show full comments'),
             trailing: new Switch(
               value: widget.configuration.showFullComment,
               onChanged: _handleShowFullCommentChange,
@@ -152,7 +152,7 @@ class HnStoriesPageState extends State<HnStoriesPage>
         padding: padding,
         itemCount: _storyCount,
         itemBuilder: (BuildContext context, int index) {
-          final int storyId = _stories.storyList[index];
+          final storyId = _stories.storyList[index];
           return new ItemTile(storyId, widget.configuration);
         },
       ),
@@ -180,13 +180,14 @@ class HnStoriesPageState extends State<HnStoriesPage>
         ],
         currentIndex: _selectedNavIndex,
         onTap: _handleNavChange,
+        type: BottomNavigationBarType.fixed,
       ),
       body: _buildBody(context),
     );
   }
 
   Future<Null> _onRefresh() async {
-    final NavTypes selectedNav = NavTypes.values[_selectedNavIndex];
+    final selectedNav = NavTypes.values[_selectedNavIndex];
 
     setState(() {
       _stories = new HnStories(storyType: StoryType.top, storyList: <int>[]);
