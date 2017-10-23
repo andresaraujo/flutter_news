@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'package:flutter_news/model/hn_item.dart';
 import 'package:flutter_news/utils.dart';
+import 'package:flutter_news/model/hn_item.dart';
 
 class CommentsTitleTile extends StatelessWidget {
   final HnItem item;

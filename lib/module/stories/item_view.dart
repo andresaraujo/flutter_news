@@ -1,9 +1,9 @@
-import 'package:flutter_news/fnews_configuration.dart';
 import 'package:timeago/timeago.dart' as ta;
 
 import 'package:flutter/material.dart';
 
 import 'package:flutter_news/utils.dart';
+import 'package:flutter_news/fnews_configuration.dart';
 import 'package:flutter_news/model/hn_item.dart';
 import 'package:flutter_news/module/stories/item_presenter.dart';
 import 'package:flutter_news/module/comments/comments_view.dart';
@@ -64,7 +64,7 @@ class ItemTileState extends State<ItemTile> implements ItemViewContract {
   void onLoadItemError() {
     if (mounted) {
       setState(() {
-        _item = _item.copyWith(title: "Error loading");
+        _item.title = "Error loading";
       });
     }
   }
@@ -78,20 +78,28 @@ class ItemTileState extends State<ItemTile> implements ItemViewContract {
   }
 
   Widget _buildBadge(int count, Color backgroundColor, TextTheme textTheme) {
-    final textStyle =
-        textTheme.caption.copyWith(color: Colors.white, fontSize: 10.0);
+    final textStyle = textTheme.caption.copyWith(
+      color: Colors.white,
+      fontSize: 10.0,
+    );
     return new Container(
-        margin: const EdgeInsets.only(bottom: 2.0),
-        width: 25.0,
-        height: 25.0,
-        decoration: new BoxDecoration(
-          color: backgroundColor,
-          shape: BoxShape.circle,
+      margin: const EdgeInsets.only(bottom: 2.0),
+      width: 25.0,
+      height: 25.0,
+      decoration: new BoxDecoration(
+        color: backgroundColor,
+        shape: BoxShape.circle,
+      ),
+      child: new Container(
+        padding: const EdgeInsets.all(2.0),
+        child: new Center(
+          child: new Text(
+            '$count',
+            style: textStyle,
+          ),
         ),
-        child: new Container(
-            padding: const EdgeInsets.all(2.0),
-            child: new Center(
-                child: new Text(count.toString(), style: textStyle))));
+      ),
+    );
   }
 
   Widget _buildText(String text, TextTheme textTheme) {
@@ -128,7 +136,7 @@ class ItemTileState extends State<ItemTile> implements ItemViewContract {
 
     final textTheme = theme.textTheme;
 
-    final timeAgo =
+    final String timeAgo =
         ta.timeAgo(new DateTime.fromMillisecondsSinceEpoch(_item.time * 1000));
 
     final badgeChildren = <Widget>[
@@ -146,20 +154,24 @@ class ItemTileState extends State<ItemTile> implements ItemViewContract {
         ]);
 
     return new InkWell(
-        onTap: () => _onTapItem(_item),
-        child: new Container(
-          padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-          child: new Row(children: <Widget>[
-            new Expanded(
-                child: new Container(
+      onTap: () => _onTapItem(_item),
+      child: new Container(
+        padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+        child: new Row(children: <Widget>[
+          new Expanded(
+            child: new Container(
               padding: const EdgeInsets.only(right: 10.0),
-              child: new Column(children: badgeChildren),
-            )),
-            new Expanded(
-              flex: 6,
-              child: itemColumn,
+              child: new Column(
+                children: badgeChildren,
+              ),
             ),
-          ]),
-        ));
+          ),
+          new Expanded(
+            flex: 6,
+            child: itemColumn,
+          ),
+        ]),
+      ),
+    );
   }
 }

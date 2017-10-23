@@ -22,6 +22,12 @@ Future<Null> storeShowFullCommentToPrefs(bool showFullComment) async {
   prefs.setBool(prefsKeyShowFullComment, showFullComment);
 }
 
+Future<Null> storeExpandCommentTreeToPrefs(bool expandCommentTree) async {
+  assert(expandCommentTree != null);
+  final prefs = await SharedPreferences.getInstance();
+  prefs.setBool(prefsKeyExpandCommentTree, expandCommentTree);
+}
+
 class FlutterNewsConfiguration {
   FlutterNewsConfiguration({
     @required this.themeName,
